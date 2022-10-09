@@ -1,21 +1,21 @@
-﻿<div div class="container mt-5  pt-5">
-    <h2 class="mb-3">Cadastrar Aluno</h2>
-    <form class="form-group">
-        <!--Código e senha gerados automaticamente-->
-        <input type="hidden" name="alunoCodigo" />
-        <input type="hidden" name="alunoSenha" />
-        <label for="alunoNome">Nome</label>
-        <input type="text" name="alunoNome" class="form-control campo-personalizado" />
-        <label for="alunoEmail">Email</label>
-        <input type="email" name="alunoEmail" class="form-control campo-personalizado" />
-        <label for="alunoTelefone">Telefone</label>
-        <input type="number" name="alunoTelefone" class="form-control campo-personalizado" />
-        <label for="alunoCpf">CPF</label>
-        <input type="text" name="alunoCpf" class="form-control campo-personalizado" />
-        <label for="alunoTurma">Turma</label>
-        <select name="alunoTurma" class="form-control campo-personalizado"> </select>
-        <br />
+﻿@model AlunoViewModel;
 
+<div div class="container mt-5  pt-5">
+    <h2 class="mb-3">Cadastrar Aluno</h2>
+    <form class="form-group" action= "/Aluno/Save"  method="post">
+        <!--Código e senha gerados automaticamente-->
+        <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
+        <input type="hidden" value = "@Model.ID" name="Id" />
+        @*<input type="hidden" name="alunoSenha" />*@
+        <label for="Nome">Nome</label>
+        <input type="text" name="Nome" value = "@Model.Nome" class="form-control campo-personalizado" />
+        <label for="Email">Email</label>
+        <input type="email" name="Email" value = "@Model.Email" class="form-control campo-personalizado" />
+        <label for="Telefone">Telefone</label>
+        <input type="text" name="Telefone" value = "@Model.Telefone" class="form-control campo-personalizado" />
+        <label for="Cpf">CPF</label>
+        <input type="number" name="Cpf" value = "@Model.Cpf" class="form-control campo-personalizado" />
+        
         <input type="submit" value="Cadastrar" class="btn btn-success botao-personalizado" />
 
     </form>

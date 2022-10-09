@@ -9,31 +9,29 @@ namespace TrabalhoInterdisciplinar.DAO
     {
         protected override SqlParameter[] CriaParametros(AulaViewModel model)
         {
-            SqlParameter[] parametros = new SqlParameter[5];
-            //parametros[0] = new SqlParameter("id", model.ID);
-            //parametros[1] = new SqlParameter("nome", model.Nome);
-            //parametros[2] = new SqlParameter("email", model.Email);
-            //parametros[3] = new SqlParameter("telefone", model.Telefone);
-            //parametros[4] = new SqlParameter("cpf", model.CPF);
+            SqlParameter[] parametros = new SqlParameter[4];
+            parametros[0] = new SqlParameter("id", model.ID);
+            parametros[1] = new SqlParameter("conteudo", model.Conteudo);
+            parametros[2] = new SqlParameter("datahoraaula", model.DataHoraAula);
+            parametros[3] = new SqlParameter("codmateria", model.CodMateria);
             return parametros;
         }
 
         protected override AulaViewModel MontaModel(DataRow registro)
         {
-            AulaViewModel a = new AulaViewModel();
-            //{
-            //    ID = Convert.ToInt32(registro["id"]),
-            //    Nome = registro["nome"].ToString(),
-            //    Email = registro["email"].ToString(),
-            //    Telefone = Convert.ToInt32(registro["telefone"]),
-            //    CPF = Convert.ToInt32(registro["cpf"])
-            //};
+            AulaViewModel a = new AulaViewModel()
+            {
+                ID = Convert.ToInt32(registro["id"]),
+                Conteudo = registro["conteudo"].ToString(),
+                DataHoraAula = Convert.ToDateTime(registro["datahoraaula"]),
+                CodMateria = Convert.ToInt32(registro["codmateria"])
+            };
             return a;
         }
 
         protected override void SetTabela()
         {
-            Tabela = "Aluno";
+            Tabela = "Aula";
         }
     }
 }

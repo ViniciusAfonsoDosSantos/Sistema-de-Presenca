@@ -14,7 +14,7 @@ namespace TrabalhoInterdisciplinar.DAO
             parametros[1] = new SqlParameter("nome", model.Nome);
             parametros[2] = new SqlParameter("email", model.Email);
             parametros[3] = new SqlParameter("telefone", model.Telefone);
-            parametros[4] = new SqlParameter("cpf", model.CPF);
+            parametros[4] = new SqlParameter("cpf", model.Cpf);
             return parametros;
         }
 
@@ -26,7 +26,7 @@ namespace TrabalhoInterdisciplinar.DAO
                 Nome = registro["nome"].ToString(),
                 Email = registro["email"].ToString(),
                 Telefone = Convert.ToInt32(registro["telefone"]),
-                CPF = Convert.ToInt32(registro["cpf"])
+                Cpf = Convert.ToInt32(registro["cpf"])
             };
             return a;
         }
