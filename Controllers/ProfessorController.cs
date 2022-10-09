@@ -9,6 +9,7 @@ namespace TrabalhoInterdisciplinar.Controllers
         public ProfessorController()
         {
             DAO = new ProfessorDAO();
+            GeraProximoId = true;
         }
     }
 }

@@ -1,22 +1,25 @@
-﻿@model AlunoViewModel;
+﻿@model AlunoViewModel
+@{
+ Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <div div class="container mt-5  pt-5">
     <h2 class="mb-3">Cadastrar Aluno</h2>
-    <form class="form-group" action= "/Aluno/Save"  method="post">
+    <form class="form-group" method="post" action="/Aluno/Save">
         <!--Código e senha gerados automaticamente-->
         <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
-        <input type="hidden" value = "@Model.ID" name="Id" />
-        @*<input type="hidden" name="alunoSenha" />*@
+        <input type="hidden" name="Id" value="@Model.ID"/>
         <label for="Nome">Nome</label>
-        <input type="text" name="Nome" value = "@Model.Nome" class="form-control campo-personalizado" />
+        <input asp-for="Nome" class="form-control campo-personalizado" />
         <label for="Email">Email</label>
-        <input type="email" name="Email" value = "@Model.Email" class="form-control campo-personalizado" />
+        <input asp-for="Email" class="form-control campo-personalizado" />
         <label for="Telefone">Telefone</label>
-        <input type="text" name="Telefone" value = "@Model.Telefone" class="form-control campo-personalizado" />
+        <input asp-for="Telefone" class="form-control campo-personalizado" />
         <label for="Cpf">CPF</label>
-        <input type="number" name="Cpf" value = "@Model.Cpf" class="form-control campo-personalizado" />
+        <input asp-for="Cpf" class="form-control campo-personalizado" />
         
         <input type="submit" value="Cadastrar" class="btn btn-success botao-personalizado" />
 
     </form>
 </div>
+

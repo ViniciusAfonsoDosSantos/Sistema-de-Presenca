@@ -12,6 +12,7 @@ namespace TrabalhoInterdisciplinar.DAO
             conexao.Open();
             return conexao;
         }
+
         public static DataTable ExecutaProcSelect(string nomeProc, SqlParameter[] parametros)
         {
 
