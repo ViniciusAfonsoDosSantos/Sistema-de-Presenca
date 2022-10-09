@@ -1,0 +1,44 @@
+﻿<div div class="container mt-5  pt-5">
+    <h2 class="mb-3">Cadastrar Professor</h2>
+    <form class="form-group">
+        <!--Código e senha gerados automaticamente-->
+        <input type="hidden" name="professorCodigo" />
+        <input type="hidden" name="professorSenha" />
+        <label for="professorNome">Nome</label>
+        <input type="text" name="professorNome" class="form-control campo-personalizado" />
+        <label for="professorEmail">Email</label>
+        <input type="email" name="professorEmail" class="form-control campo-personalizado" />
+        <label for="professorTelefone">Telefone</label>
+        <input type="number" name="professorTelefone" class="form-control campo-personalizado" />
+        <label for="professorCpf">CPF</label>
+        <input type="text" name="professorCpf" class="form-control campo-personalizado" />
+        <label for="professorMateria">Matéria</label>
+        <select name="professorMateria" class="form-control campo-personalizado"> </select>
+        <br />
+
+        <input type="submit" value="Cadastrar" class="btn btn-success botao-personalizado" />
+
+    </form>
+</div>
+
+    <!-- Teria uma tabela para mostrar as matérias que foram inseridas para o professor
+        Poderia utilizar AJAX aqui!
+    {
+        if(professor.Materia != null)
+        {
+            <table class="table table-responsive">
+                <tr>
+                    <th></th>
+                   
+                </tr>
+                foreach ()
+                {
+                    <tr>
+                        <td></td>
+                    </tr>
+                }
+            </table>
+
+        }
+    }
+    -->

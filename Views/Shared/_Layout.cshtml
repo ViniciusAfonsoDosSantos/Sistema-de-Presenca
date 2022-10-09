@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TrabalhoInterdisciplinar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <header>
+        <!--   Opacity só foi adicionado na versão 5.1 do bootstrap.
+               Tem um problema com responsividade no header.
+        -->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-personalizada ">
+            <div class="mesmoTamanho">
+                <a class="navbar-brand opacidadeTotal" href="/Home/Index">LogoAqui</a>
+            </div>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto ml-auto">
+                    <li class="nav-item ">
+                        <a class="nav-link" href="/Home/Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Sobre</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Consultas
+                        </a>
+                        <div class="dropdown-menu container-personalizado" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">ConsultaVW</a>
+                            <a class="dropdown-item" href="#">ConsultaSP</a>
+                            <a class="dropdown-item" href="#">ConsultaFUN</a>
+                        </div>
+                    </li>
+                    <!--Depois mudo-->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Cadastros
+                        </a>
+                        <div class="dropdown-menu container-personalizado" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/Aluno/Index">Aluno</a>
+                            <a class="dropdown-item" href="/Professor/Index">Professor</a>
+                            <a class="dropdown-item" href="/Materia/Index">Matéria</a>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="mesmoTamanho">
+                    <button type="button" class="btn btn-primary botao-header " data-toggle="modal" data-target="#loginModal">
+                         Login
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        
+        <!-- Modal Login -->
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog " role="document">
+                <div class="modal-content container-personalizado">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Entre com a sua conta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-group">
+                            <label for="codigoLogin" class="control-label">Código</label>
+                            <input type="number" name="codigoLogin" class="form-control campo-personalizado" />
+                            <label for="senhaLogin" class="control-label">Senha</label>
+                            <input type="password" name="senhaLogin" class="form-control campo-personalizado" />
+                            <a href="#" class="form-text text-right">Esqueci minha senha</a>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary botao-personalizado">Entrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Mandar um email para trocar senha-->
+    </header>
+    <main role="main" class="pb-3">
+        @RenderBody()
+    </main>
+
+    <footer class="border-top footer text-muted mt-auto">
+        <div class="container estilo-footer">
+            <p class="text-center ">Copyright&copy - Trabalho interdisciplinar</p>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
