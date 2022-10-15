@@ -60,7 +60,8 @@ namespace TrabalhoInterdisciplinar.Controllers
                         DAO.Insert(model);
                     else
                         DAO.Update(model);
-                    return RedirectToAction(NomeViewForm);
+                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                    return RedirectToAction("Create");
                 }
             }
             catch (Exception erro)
@@ -72,7 +73,7 @@ namespace TrabalhoInterdisciplinar.Controllers
         {
             ModelState.Clear();
             if (operacao == "I" && DAO.Consulta(model.ID) != null)
-                ModelState.AddModelError("Id", "Código já está em uso!");
+                ModelState.AddModelError("Id", "ID já está em uso!");
             if (operacao == "A" && DAO.Consulta(model.ID) == null)
                 ModelState.AddModelError("Id", "Este registro não existe!");
             if (model.ID <= 0)

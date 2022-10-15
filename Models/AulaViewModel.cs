@@ -8,4 +8,5 @@ namespace TrabalhoInterdisciplinar.Models
         public DateTime DataHoraAula { get; set; }
         public int CodMateria { get; set; }
     }
+
 }

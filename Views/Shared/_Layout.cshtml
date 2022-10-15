@@ -9,6 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquey-mask//jquery.mask.min.js">
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
 </head>
 <body class="d-flex flex-column min-vh-100">
     <header>
@@ -32,7 +37,7 @@
                         <a class="nav-link" href="#">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Sobre</a>
+                        <a class="nav-link" href="/Sobre/Index">Sobre</a>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -51,6 +56,7 @@
                         </a>
                         <div class="dropdown-menu container-personalizado" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="/Aluno/Create">Aluno</a>
+                            <a class="dropdown-item" href="/Aula/Create">Aula</a>
                             <a class="dropdown-item" href="/Professor/Create">Professor</a>
                             <a class="dropdown-item" href="/Materia/Create">Matéria</a>
                         </div>
@@ -103,9 +109,5 @@
             <p class="text-center ">Copyright&copy - Trabalho interdisciplinar</p>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -2,6 +2,14 @@
     font-family: 'Jost', sans-serif;
 }
 
+.field-validation-error {
+    font-size: smaller;
+}
+
+.input-validation-error {
+    border: 1px solid #ff0000;
+}
+
 .mesmoTamanho{
     width: 88px;
 }
@@ -68,6 +76,37 @@
     height: 225px;
 }
 
+.toast {
+    position: absolute;
+    top: 75px;
+    right: 0;
+}
+
+.toast-header {
+    background-color: #28a745;
+    border-bottom: none;
+}
+
 .estilo-footer p {
     margin: 10px 0;
 }
+
+.social-link {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    border-radius: 50%;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+    .social-link:hover,
+    .social-link:focus {
+        background: #ddd;
+        text-decoration: none;
+        color: #555;
+    }
