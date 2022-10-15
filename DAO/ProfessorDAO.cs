@@ -25,8 +25,8 @@ namespace TrabalhoInterdisciplinar.DAO
                 ID = Convert.ToInt32(registro["id"]),
                 Nome = registro["nome"].ToString(),
                 Email = registro["email"].ToString(),
-                Telefone = Convert.ToInt32(registro["telefone"]),
-                CPF = Convert.ToInt32(registro["cpf"])
+                Telefone = registro["telefone"].ToString(),
+                CPF = registro["cpf"].ToString()
             };
             return a;
         }
@@ -34,6 +34,22 @@ namespace TrabalhoInterdisciplinar.DAO
         protected override void SetTabela()
         {
             Tabela = "Professor";
+        }
+
+        public override int ProximoId()
+        {
+            var codigo = 0;
+            var p = new SqlParameter[] {
+                new SqlParameter("tabela", Tabela)
+            };
+            var tabela = HelperDAO.ExecutaProcSelect("spProximoId", p);
+
+            if (tabela.Rows[0][0].ToString() != "1")
+                codigo = Convert.ToInt32("2" + Convert.ToString(Convert.ToInt32(tabela.Rows[0][0].ToString().Substring(1)) + 1));
+            else
+                codigo = 21;
+            return codigo;
+
         }
     }
 }

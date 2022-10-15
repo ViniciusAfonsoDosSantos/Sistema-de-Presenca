@@ -1,4 +1,4 @@
-﻿@model MateriaViewModel
+﻿@model AulaViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -18,22 +18,22 @@
 </div>
 
 <div div class="container mt-5  pt-5">
-    <h2 class="mb-3">Cadastrar Matéria</h2>
-    <form class="form-group" method="post" action="/Materia/Save">
+    <h2 class="mb-3">Cadastrar Aula</h2>
+    <form class="form-group" method="post" action="/Aula/Save">
         <!--Código gerado automaticamente-->
         <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
         <input type="hidden" name="ID" value="@Model.ID" />
-        <label for="Descricao" class="mt-1">Descrição</label>
-        <textarea name="Descricao" class="form-control campo-personalizado"></textarea>
-        <span asp-validation-for="Descricao" class="text-danger"></span>
+        <label for="Conteudo" class="mt-1">Conteudo</label>
+        <textarea name="Conteudo" class="form-control campo-personalizado"></textarea>
+        <span asp-validation-for="Conteudo" class="text-danger"></span>
         <br />
-        <label for="CargaHoraria" class="mt-1">Carga Horaria</label>
-        <input asp-for="CargaHoraria" class="form-control campo-personalizado" />
-        <span asp-validation-for="CargaHoraria" class="text-danger"></span>
+        <label for="DataHoraAula" class="mt-1">Data e Hora</label>
+        <input asp-for="DataHoraAula" class="form-control campo-personalizado" />
+        <span asp-validation-for="DataHoraAula" class="text-danger"></span>
         <br />
-        <label for="CodProfessor" class="mt-1">Código do Professor</label>
-        <select asp-for="CodProfessor" asp-items="ViewBag.Professores" class="form-control campo-personalizado"></select>
-        <span asp-validation-for="CodProfessor" class="text-danger"></span>
+        <label for="CodMateria" class="mt-1">Código da Matéria</label>
+        <select asp-for="CodMateria" asp-items="ViewBag.Materias" class="form-control campo-personalizado"></select>
+        <span asp-validation-for="CodMateria" class="text-danger"></span>
         <br />
 
         <input type="submit" value="Cadastrar" class="btn btn-success botao-personalizado mt-1" />

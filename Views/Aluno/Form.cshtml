@@ -3,23 +3,69 @@
  Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!--Toast-->
+<span id="AlertMessage" class="d-none">@TempData["AlertMessage"]</span>
+
+<div aria-live="polite" aria-atomic="true" style="position: relative; ">
+    <div class="toast container-personalizado" data-delay="4000">
+        <div class="toast-header text-white">
+            <strong class="mr-auto"> @TempData["AlertMessage"]</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+
 <div div class="container mt-5  pt-5">
     <h2 class="mb-3">Cadastrar Aluno</h2>
     <form class="form-group" method="post" action="/Aluno/Save">
         <!--Código e senha gerados automaticamente-->
         <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
-        <input type="hidden" name="Id" value="@Model.ID"/>
-        <label for="Nome">Nome</label>
+        <input type="hidden" name="ID" value="@Model.ID"/>
+        <label for="Nome" class="mt-1">Nome</label>
         <input asp-for="Nome" class="form-control campo-personalizado" />
-        <label for="Email">Email</label>
+        <span asp-validation-for="Nome" class="text-danger"></span>
+        <br />
+        <label for="Email" class="mt-1">Email</label>
         <input asp-for="Email" class="form-control campo-personalizado" />
-        <label for="Telefone">Telefone</label>
+        <span asp-validation-for="Email" class="text-danger"></span>
+        <br />
+        <label for="Telefone" class="mt-1">Telefone</label>
         <input asp-for="Telefone" class="form-control campo-personalizado" />
-        <label for="Cpf">CPF</label>
+        <span asp-validation-for="Telefone" class="text-danger"></span>
+        <br />
+        <label for="Cpf" class="mt-1">CPF</label>
         <input asp-for="Cpf" class="form-control campo-personalizado" />
+        <span asp-validation-for="Cpf" class="text-danger"></span>
+        <br />
         
-        <input type="submit" value="Cadastrar" class="btn btn-success botao-personalizado" />
+        <input type="submit" value="Cadastrar" class="btn btn-success botao-personalizado mt-1" />
 
     </form>
 </div>
+
+<!--Toast Javascript-->
+@section Scripts
+    {
+    <script>
+        $(document).ready(function () {
+
+            var message = $('#AlertMessage').text();
+            if (message !== '') {
+                $('.toast').toast('show')
+            }
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('#Telefone').mask('(00) 00000-0000', { placeholder: "(xx) xxxxx-xxxx" });
+            $('#Cpf').mask('000.000.000-00', { reverse: true, placeholder: "xxx.xxx.xxx-xx" });
+        });
+
+    </script>
+}
+
 

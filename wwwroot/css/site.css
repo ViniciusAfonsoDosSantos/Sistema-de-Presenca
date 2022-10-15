@@ -2,6 +2,14 @@
     font-family: 'Jost', sans-serif;
 }
 
+.field-validation-error {
+    font-size: smaller;
+}
+
+.input-validation-error {
+    border: 1px solid #ff0000;
+}
+
 .mesmoTamanho{
     width: 88px;
 }
@@ -66,6 +74,17 @@
     width: 183px;
     margin-right: 20px;
     height: 225px;
+}
+
+.toast {
+    position: absolute;
+    top: 75px;
+    right: 0;
+}
+
+.toast-header {
+    background-color: #28a745;
+    border-bottom: none;
 }
 
 .estilo-footer p {
