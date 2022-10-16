@@ -83,17 +83,19 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form class="form-group">
-                            <label for="codigoLogin" class="control-label">Código</label>
-                            <input type="number" name="codigoLogin" class="form-control campo-personalizado" />
-                            <label for="senhaLogin" class="control-label">Senha</label>
-                            <input type="password" name="senhaLogin" class="form-control campo-personalizado" />
+                        <form class="form-group" method="post" action="/Login/Save">
+                            <input type="hidden" name="Operacao" value="I" />
+                            <label for="ID" class="control-label">ID</label>
+                            <input type="number" name="ID" class="form-control campo-personalizado" />
+                            <label for="SenhaHash" class="control-label">Senha</label>
+                            <input type="password" name="SenhaHash" class="form-control campo-personalizado" />
                             <a href="#" class="form-text text-right">Esqueci minha senha</a>
+                            <div class="modal-footer">
+                             <input value="Entrar" type="submit" id="login-button" class="btn btn-primary botao-personalizado"/>
+                             </div>
                         </form>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary botao-personalizado">Entrar</button>
-                    </div>
+                    
                 </div>
             </div>
         </div>

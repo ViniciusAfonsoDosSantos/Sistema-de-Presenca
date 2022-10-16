@@ -49,9 +49,6 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
             //Falta validar se CPF é valido ou não
             // Talvez usar API ou AJAX para consultar na receita federal
-            
-
-
         }
     }
 }
