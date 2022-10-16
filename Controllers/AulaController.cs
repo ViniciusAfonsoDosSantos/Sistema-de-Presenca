@@ -49,5 +49,6 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
             ViewBag.Materias = listaMaterias;
         }
+        
     }
 }
