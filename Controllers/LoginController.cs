@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Helpers;
@@ -14,36 +15,31 @@ namespace TrabalhoInterdisciplinar.Controllers
             GeraProximoId = false;
         }
 
-        public override IActionResult Save(LoginViewModel model, string Operacao)
+        public IActionResult FazLogin(string ID, string SenhaHash)
         {
-            try
+            if(DAO.Consulta(Convert.ToInt32(ID)) == null)
             {
-                ValidaDados(model, Operacao);
-                if (ModelState.IsValid == false)
-                {
-                    ViewBag.Operacao = Operacao;
-                    PreencheDadosParaView(Operacao, model);
-                    return View(NomeViewForm, model);
-                }
-                else
-                {
-                    model.SenhaHash = PasswordHasher.HashPassword(model.SenhaHash);
-                    if (Operacao == "I")
-                    {
-                        DAO.Insert(model);
-                    }
-                    else
-                    {
-                        DAO.Update(model);
-                    }
-                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
-                    return RedirectToAction("Create"); //redirecionar para outra view em outro controller
-                }
+                TempData["LoginMessage"] = "Usuário ou senha inválidos!";
+                return RedirectToAction("index", "Home");
             }
-            catch (Exception erro)
+
+            if (Convert.ToInt32(ID) == DAO.Consulta(Convert.ToInt32(ID)).ID && 
+                SenhaHash == DAO.Consulta(Convert.ToInt32(ID)).SenhaHash)
             {
-                return View("Error", new ErrorViewModel(erro.ToString()));
+                HttpContext.Session.SetString("Logado", "true");
+                return RedirectToAction("index", "Home");
             }
+            else
+            {
+                TempData["LoginMessage"] = "Usuário ou senha inválidos!";
+                return RedirectToAction("index", "Home");
+            }
+        }
+
+        public IActionResult LogOff()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("index", "Home");
         }
 
 

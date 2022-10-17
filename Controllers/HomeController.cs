@@ -24,6 +24,7 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.Logado = HelperControllers.VerificaUserLogado(HttpContext.Session);
             return View();
         }
 

@@ -11,6 +11,7 @@ namespace TrabalhoInterdisciplinar.Controllers
         {
             DAO = new ProfessorDAO();
             GeraProximoId = true;
+            ExigeAutenticacao = true;
         }
 
         protected override void ValidaDados(ProfessorViewModel professor, string operacao)

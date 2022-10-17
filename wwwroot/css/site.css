@@ -19,6 +19,20 @@
     width: 100%;
 }
 
+.modal-footer {
+    padding: 16px 0 0 0;
+    justify-content: center;
+}
+
+.botao-personalizado-login {
+    width: 200px;
+    border-radius: 30px;
+}
+
+.alerta-login {
+    font-size: smaller;
+}
+
 .navbar-personalizada {
     background-color: rgba(248, 249, 250, 0.6)
 }

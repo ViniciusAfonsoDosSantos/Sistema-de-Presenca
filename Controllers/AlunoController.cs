@@ -14,6 +14,43 @@ namespace TrabalhoInterdisciplinar.Controllers
             GeraProximoId = true;
         }
 
+        public override IActionResult Save(AlunoViewModel model, string Operacao)
+        {
+            try
+            {
+                ValidaDados(model, Operacao);
+                if (ModelState.IsValid == false)
+                {
+                    ViewBag.Operacao = Operacao;
+                    PreencheDadosParaView(Operacao, model);
+                    return View(NomeViewForm, model);
+                }
+                else
+                {
+                    if (Operacao == "I")
+                    {
+                        DAO.Insert(model);
+                        LoginViewModel modelLogin = new LoginViewModel()
+                        {
+                            ID = model.ID,
+                            SenhaHash = "0001"
+                        };
+                        LoginDAO login = new LoginDAO();
+                        login.Insert(modelLogin);
+                        
+                    }
+                    else
+                        DAO.Update(model);
+                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                    return RedirectToAction("Create");
+                }
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
+        }
+
         protected override void ValidaDados(AlunoViewModel aluno, string operacao)
         {
             base.ValidaDados(aluno, operacao);

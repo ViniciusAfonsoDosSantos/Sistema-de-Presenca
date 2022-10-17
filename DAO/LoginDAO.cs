@@ -11,7 +11,7 @@ namespace TrabalhoInterdisciplinar.DAO
         {
             SqlParameter[] parametros = new SqlParameter[2];
             parametros[0] = new SqlParameter("id", model.ID);
-            parametros[2] = new SqlParameter("senhaHash", model.SenhaHash);
+            parametros[1] = new SqlParameter("senha", model.SenhaHash);
             return parametros;
         }
 
@@ -20,7 +20,7 @@ namespace TrabalhoInterdisciplinar.DAO
             LoginViewModel a = new LoginViewModel()
             {
                 ID = Convert.ToInt32(registro["id"]),
-                SenhaHash = registro["senhaHash"].ToString()
+                SenhaHash = registro["senha"].ToString()
             };
             return a;
         }
@@ -29,5 +29,9 @@ namespace TrabalhoInterdisciplinar.DAO
         {
             Tabela = "Login";
         }
+
+        
+
+
     }
 }

@@ -55,10 +55,19 @@
                             Cadastros
                         </a>
                         <div class="dropdown-menu container-personalizado" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="/Aluno/Create">Aluno</a>
-                            <a class="dropdown-item" href="/Aula/Create">Aula</a>
-                            <a class="dropdown-item" href="/Professor/Create">Professor</a>
-                            <a class="dropdown-item" href="/Materia/Create">Matéria</a>
+                            @if (ViewBag.Logado == true)
+                            {
+                                <a class="dropdown-item" href="/Aluno/Create">Aluno</a>
+                                <a class="dropdown-item" href="/Aula/Create">Aula</a>
+                                <a class="dropdown-item" href="/Professor/Create">Professor</a>
+                                <a class="dropdown-item" href="/Materia/Create">Matéria</a>
+                            }
+                            else
+                            {
+                                <a class="dropdown-item" href="/Aluno/Create">Aluno</a>
+                                <a class="dropdown-item" href="/Aula/Create">Aula</a>
+                                <a class="dropdown-item" href="/Materia/Create">Matéria</a>
+                            }
                         </div>
                     </li>
                 </ul>
@@ -83,15 +92,21 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form class="form-group" method="post" action="/Login/Save">
-                            <input type="hidden" name="Operacao" value="I" />
-                            <label for="ID" class="control-label">ID</label>
-                            <input type="number" name="ID" class="form-control campo-personalizado" />
-                            <label for="SenhaHash" class="control-label">Senha</label>
-                            <input type="password" name="SenhaHash" class="form-control campo-personalizado" />
-                            <a href="#" class="form-text text-right">Esqueci minha senha</a>
+                        <form class="form-group" method="post" action="/Login/FazLogin">
+                            <div class="d-flex justify-content-between">
+                                <label for="ID" class="control-label mt-1">ID</label>
+                                @if (TempData["LoginMessage"] != null)
+                                {
+                                     <span id="LoginMessage" class="text-danger alerta-login">@TempData["LoginMessage"]</span>
+                                }
+                            </div>
+                            <input type="text" name="ID"  class="form-control campo-personalizado" />
+                            <br />
+                            <label for="SenhaHash" class="control-label mt-1">Senha</label>
+                            <input type="password" name="SenhaHash"  class="form-control campo-personalizado" />
+                            <a href="#" class="form-text text-right mt-3 mb-3">Esqueci minha senha</a>
                             <div class="modal-footer">
-                             <input value="Entrar" type="submit" id="login-button" class="btn btn-primary botao-personalizado"/>
+                             <input value="Entrar" type="submit" id="login-button" class="btn btn-primary botao-personalizado-login"/>
                              </div>
                         </form>
                     </div>
@@ -111,5 +126,16 @@
             <p class="text-center ">Copyright&copy - Trabalho interdisciplinar</p>
         </div>
     </footer>
+
+    <script>
+        $(document).ready(function () {
+
+            var Loginmessage = $('#LoginMessage').text();
+            if (Loginmessage !== '') {
+                $('#loginModal').modal('show')
+            }
+        });
+    </script>
+
 </body>
 </html>
