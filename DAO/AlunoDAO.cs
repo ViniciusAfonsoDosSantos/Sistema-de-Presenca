@@ -9,12 +9,19 @@ namespace TrabalhoInterdisciplinar.DAO
     {
         protected override SqlParameter[] CriaParametros(AlunoViewModel model)
         {
+            object imgByte = model.ImagemEmByte;
+            if (imgByte == null)
+                imgByte = DBNull.Value;
+
+
             SqlParameter[] parametros = new SqlParameter[5];
             parametros[0] = new SqlParameter("id", model.ID);
             parametros[1] = new SqlParameter("nome", model.Nome);
             parametros[2] = new SqlParameter("email", model.Email);
             parametros[3] = new SqlParameter("telefone", model.Telefone);
             parametros[4] = new SqlParameter("cpf", model.Cpf);
+            parametros[5] = new SqlParameter("imagem", imgByte);
+
             return parametros;
         }
 
@@ -28,6 +35,10 @@ namespace TrabalhoInterdisciplinar.DAO
                 Telefone = registro["telefone"].ToString(),
                 Cpf = registro["cpf"].ToString()
             };
+
+            if (registro["imagem"] != DBNull.Value)
+                a.ImagemEmByte = registro["imagem"] as byte[];
+
             return a;
         }
 

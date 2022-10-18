@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Models;
@@ -13,6 +15,26 @@ namespace TrabalhoInterdisciplinar.Controllers
             DAO = new AlunoDAO();
             GeraProximoId = true;
         }
+
+        /// <summary>
+        /// Converte a imagem recebida no form em um vetor de bytes
+        /// </summary>
+        /// <param name="file"></param>
+        /// <returns></returns>
+        public byte[] ConvertImageToByte(IFormFile file)
+        {
+            if (file != null)
+                using (var ms = new MemoryStream())
+                {
+                    file.CopyTo(ms);
+                    return ms.ToArray();
+                }
+            else
+                return null;
+        }
+
+
+
 
         public override IActionResult Save(AlunoViewModel model, string Operacao)
         {
@@ -58,6 +80,27 @@ namespace TrabalhoInterdisciplinar.Controllers
                 ModelState.AddModelError("Nome", "Campo obrigatório.");
             if (string.IsNullOrEmpty(aluno.Email))
                 ModelState.AddModelError("Email", "Campo obrigatório.");
+
+            //Imagem será obrigatio apenas na inclusão. 
+            //Na alteração iremos considerar a que já estava salva.
+            if (aluno.Imagem == null && operacao == "I")
+                ModelState.AddModelError("Imagem", "Escolha uma imagem.");
+            if (aluno.Imagem != null && aluno.Imagem.Length / 1024 / 1024 >= 2)
+                ModelState.AddModelError("Imagem", "Imagem limitada a 2 mb.");
+            if (ModelState.IsValid)
+            {
+                //na alteração, se não foi informada a imagem, iremos manter a que já estava salva.
+                if (operacao == "A" && aluno.Imagem == null)
+                {
+                    AlunoViewModel alun = DAO.Consulta(aluno.ID);
+                    aluno.ImagemEmByte = alun.ImagemEmByte;
+                }
+                else
+                {
+                    aluno.ImagemEmByte = ConvertImageToByte(aluno.Imagem);
+                }
+            }
+
             else
             {
                 if (aluno.Email.Length < 5)
