@@ -27,7 +27,7 @@ namespace TrabalhoInterdisciplinar
             services.AddSession(options =>
             {
                 options.Cookie.IsEssential = true; // GDPR mais detalhes em https://andrewlock.net/session-state-gdpr-and-non-essential-cookies/
-                options.IdleTimeout = TimeSpan.FromSeconds(1000000);
+                options.IdleTimeout = TimeSpan.FromSeconds(600);
             });
         }
 

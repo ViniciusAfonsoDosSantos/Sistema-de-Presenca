@@ -60,14 +60,9 @@ namespace TrabalhoInterdisciplinar.Controllers
                 ModelState.AddModelError("Email", "Campo obrigatório.");
             else
             {
-                if (aluno.Email.Length < 5)
+                Regex validaEmailRegex = new Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+                if (!validaEmailRegex.IsMatch(aluno.Email))
                     ModelState.AddModelError("Email", "Email Inválido.");
-                else
-                {
-                    if (aluno.Email.Substring((aluno.Email.Length - 4), 4) != ".com" || aluno.Email.Substring((aluno.Email.Length - 5), 1) == "@"
-                    || aluno.Email.IndexOf("@") == -1 || aluno.Email.IndexOf("@") == 0)
-                        ModelState.AddModelError("Email", "Email Inválido.");
-                }
             }
             if (string.IsNullOrEmpty(aluno.Telefone))
                 ModelState.AddModelError("Telefone", "Campo obrigatório.");

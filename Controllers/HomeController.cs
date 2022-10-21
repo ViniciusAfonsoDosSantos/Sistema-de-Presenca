@@ -24,14 +24,10 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.Logado = HelperControllers.VerificaUserLogado(HttpContext.Session);
+            ViewBag.LogadoProfessor = HelperControllers.VerificaProfessorLogado(HttpContext.Session);
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

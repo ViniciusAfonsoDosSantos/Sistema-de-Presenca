@@ -19,7 +19,7 @@ namespace TrabalhoInterdisciplinar.Controllers
         {
             base.ValidaDados(materia, operacao);
             if (string.IsNullOrEmpty(materia.Descricao))
-                ModelState.AddModelError("Descricao", "Campo obrigatório..");
+                ModelState.AddModelError("Descricao", "Campo obrigatório.");
             if (materia.CargaHoraria <= 0)
                 ModelState.AddModelError("CargaHoraria", "Campo obrigatório.");
             if (materia.CodProfessor <= 0)

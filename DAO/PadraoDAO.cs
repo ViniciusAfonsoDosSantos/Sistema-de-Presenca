@@ -25,7 +25,7 @@ namespace TrabalhoInterdisciplinar.DAO
         }
         public virtual void Update(T model)
         {
-            HelperDAO.ExecutaProc("spIUpdate_" + Tabela, CriaParametros(model));
+            HelperDAO.ExecutaProc("spUpdate_" + Tabela, CriaParametros(model));
         }
 
         public virtual void Delete(int id)
@@ -59,6 +59,7 @@ namespace TrabalhoInterdisciplinar.DAO
                 new SqlParameter("tabela", Tabela)
             };
             var tabela = HelperDAO.ExecutaProcSelect("spProximoId", p);
+            
             return Convert.ToInt32(tabela.Rows[0][0]) + 1;
         }
 

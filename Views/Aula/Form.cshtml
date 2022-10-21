@@ -23,8 +23,8 @@
         <!--Código gerado automaticamente-->
         <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
         <input type="hidden" name="ID" value="@Model.ID" />
-        <label for="Conteudo" class="mt-1">Conteudo</label>
-        <textarea name="Conteudo" class="form-control campo-personalizado"></textarea>
+        <label for="Conteudo" class="mt-1">Conteúdo</label>
+        <textarea name="Conteudo" value="@Model.Conteudo" class="form-control campo-personalizado">@Model.Conteudo</textarea>
         <span asp-validation-for="Conteudo" class="text-danger"></span>
         <br />
         <label for="DataHoraAula" class="mt-1">Data e Hora</label>

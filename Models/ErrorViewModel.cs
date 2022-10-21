@@ -7,11 +7,11 @@ namespace TrabalhoInterdisciplinar.Models
         public string RequestId { get; set; }
 
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-        public string Mensagem { get; set; }
+        public string Erro { get; set; }
 
         public ErrorViewModel(string mensagem)
         {
-            Mensagem = mensagem;
+            Erro = mensagem;
         }
 
         public ErrorViewModel()

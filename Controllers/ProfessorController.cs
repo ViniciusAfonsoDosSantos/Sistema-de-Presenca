@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Text.RegularExpressions;
 using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Models;
@@ -11,7 +12,43 @@ namespace TrabalhoInterdisciplinar.Controllers
         {
             DAO = new ProfessorDAO();
             GeraProximoId = true;
-            ExigeAutenticacao = true;
+        }
+
+        public override IActionResult Save(ProfessorViewModel model, string Operacao)
+        {
+            try
+            {
+                ValidaDados(model, Operacao);
+                if (ModelState.IsValid == false)
+                {
+                    ViewBag.Operacao = Operacao;
+                    PreencheDadosParaView(Operacao, model);
+                    return View(NomeViewForm, model);
+                }
+                else
+                {
+                    if (Operacao == "I")
+                    {
+                        DAO.Insert(model);
+                        LoginViewModel modelLogin = new LoginViewModel()
+                        {
+                            ID = model.ID,
+                            SenhaHash = "0001"
+                        };
+                        LoginDAO login = new LoginDAO();
+                        login.Insert(modelLogin);
+
+                    }
+                    else
+                        DAO.Update(model);
+                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                    return RedirectToAction("Create");
+                }
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
         }
 
         protected override void ValidaDados(ProfessorViewModel professor, string operacao)
@@ -23,14 +60,9 @@ namespace TrabalhoInterdisciplinar.Controllers
                 ModelState.AddModelError("Email", "Campo obrigatório.");
             else
             {
-                if (professor.Email.Length < 5)
+                Regex validaEmailRegex = new Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+                if (!validaEmailRegex.IsMatch(professor.Email))
                     ModelState.AddModelError("Email", "Email Inválido.");
-                else
-                {
-                    if (professor.Email.Substring((professor.Email.Length - 4), 4) != ".com" || professor.Email.Substring((professor.Email.Length - 5), 1) == "@"
-                    || professor.Email.IndexOf("@") == -1 || professor.Email.IndexOf("@") == 0)
-                        ModelState.AddModelError("Email", "Email Inválido.");
-                }
             }
             if (string.IsNullOrEmpty(professor.Telefone))
                 ModelState.AddModelError("Telefone", "Campo obrigatório.");

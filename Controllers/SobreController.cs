@@ -12,10 +12,7 @@ namespace TrabalhoInterdisciplinar.Controllers
     {
         public IActionResult Index()
         {
-            return View();
-        }
-        public IActionResult Privacy()
-        {
+            ViewBag.LogadoProfessor = HelperControllers.VerificaProfessorLogado(HttpContext.Session);
             return View();
         }
 
