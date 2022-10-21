@@ -80,27 +80,6 @@ namespace TrabalhoInterdisciplinar.Controllers
                 ModelState.AddModelError("Nome", "Campo obrigatório.");
             if (string.IsNullOrEmpty(aluno.Email))
                 ModelState.AddModelError("Email", "Campo obrigatório.");
-
-            //Imagem será obrigatio apenas na inclusão. 
-            //Na alteração iremos considerar a que já estava salva.
-            if (aluno.Imagem == null && operacao == "I")
-                ModelState.AddModelError("Imagem", "Escolha uma imagem.");
-            if (aluno.Imagem != null && aluno.Imagem.Length / 1024 / 1024 >= 2)
-                ModelState.AddModelError("Imagem", "Imagem limitada a 2 mb.");
-            if (ModelState.IsValid)
-            {
-                //na alteração, se não foi informada a imagem, iremos manter a que já estava salva.
-                if (operacao == "A" && aluno.Imagem == null)
-                {
-                    AlunoViewModel alun = DAO.Consulta(aluno.ID);
-                    aluno.ImagemEmByte = alun.ImagemEmByte;
-                }
-                else
-                {
-                    aluno.ImagemEmByte = ConvertImageToByte(aluno.Imagem);
-                }
-            }
-
             else
             {
                 Regex validaEmailRegex = new Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
@@ -125,6 +104,27 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
             //Falta validar se CPF é valido ou não
             // Talvez usar API ou AJAX para consultar na receita federal
+
+            //Imagem será obrigatio apenas na inclusão. 
+            //Na alteração iremos considerar a que já estava salva.
+            if (aluno.Imagem == null && operacao == "I")
+                ModelState.AddModelError("Imagem", "Escolha uma imagem.");
+            if (aluno.Imagem != null && aluno.Imagem.Length / 1024 / 1024 >= 2)
+                ModelState.AddModelError("Imagem", "Imagem limitada a 2 mb.");
+            if (ModelState.IsValid)
+            {
+                //na alteração, se não foi informada a imagem, iremos manter a que já estava salva.
+                if (operacao == "A" && aluno.Imagem == null)
+                {
+                    AlunoViewModel alun = DAO.Consulta(aluno.ID);
+                    aluno.ImagemEmByte = alun.ImagemEmByte;
+                }
+                else
+                {
+                    aluno.ImagemEmByte = ConvertImageToByte(aluno.Imagem);
+                }
+            }
+
         }
 
     }
