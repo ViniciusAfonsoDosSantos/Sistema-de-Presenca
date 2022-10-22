@@ -30,7 +30,7 @@ namespace TrabalhoInterdisciplinar.Controllers
         protected override void PreencheDadosParaView(string Operacao, AulaViewModel model)
         {
             base.PreencheDadosParaView(Operacao, model);
-            model.DataHoraAula = DateTime.Now;
+            model.DataHoraAula = Convert.ToDateTime(DateTime.Now.ToString("dd/MM/yyyy HH:mm"));
             PreparaListaProfessoresParaCombo();
 
         }

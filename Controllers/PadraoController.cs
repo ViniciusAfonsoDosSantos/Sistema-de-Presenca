@@ -13,15 +13,15 @@ namespace TrabalhoInterdisciplinar.Controllers
         protected bool GeraProximoId { get; set; }
         protected string NomeViewIndex { get; set; } = "index";
         protected string NomeViewForm { get; set; } = "Form";
-        protected bool ExigeAutenticacao { get; set; } = false;
+        protected bool ExigeAutenticacao { get; set; } = true;
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (ExigeAutenticacao && !HelperControllers.VerificaUserLogado(HttpContext.Session))
+            if (ExigeAutenticacao && !HelperControllers.VerificaProfessorLogado(HttpContext.Session))
                 context.Result = RedirectToAction("Index", "Home");
             else
             {
-                ViewBag.Logado = true;
+                ViewBag.LogadoProfessor = true;
                 base.OnActionExecuting(context);
             }
         }

@@ -31,7 +31,7 @@
         <input asp-for="Email" class="form-control campo-personalizado" />
         <span asp-validation-for="Email" class="text-danger"></span>
         <br />
-        <label for="Telefone" class="mt-1">Telefone</label>
+        <label for="Telefone" class="mt-1">Celular</label>
         <input asp-for="Telefone" class="form-control campo-personalizado" />
         <span asp-validation-for="Telefone" class="text-danger"></span>
         <br />
@@ -45,6 +45,9 @@
         <img id="imgPreview" src="data:image/jpeg;base64,@Model.ImagemEmBase64" class="img-responsive"
              width="100">
         <span asp-validation-for="Imagem" class="text-danger"></span>*@
+
+        <br />
+        <br />
 
         <input type="submit" value="Cadastrar" class="btn btn-success botao-personalizado mt-1" />
 

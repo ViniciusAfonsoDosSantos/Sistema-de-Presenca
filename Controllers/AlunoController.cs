@@ -80,6 +80,30 @@ namespace TrabalhoInterdisciplinar.Controllers
                 ModelState.AddModelError("Nome", "Campo obrigatório.");
             if (string.IsNullOrEmpty(aluno.Email))
                 ModelState.AddModelError("Email", "Campo obrigatório.");
+            else
+            {
+                Regex validaEmailRegex = new Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+                if (!validaEmailRegex.IsMatch(aluno.Email))
+                    ModelState.AddModelError("Email", "Email Inválido.");
+            }
+            if (string.IsNullOrEmpty(aluno.Telefone))
+                ModelState.AddModelError("Telefone", "Campo obrigatório.");
+            else
+            {
+                Regex validaNumeroTelefoneRegex = new Regex("^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$");
+                if (!validaNumeroTelefoneRegex.IsMatch(aluno.Telefone))
+                    ModelState.AddModelError("Telefone", "Telefone Inválido.");
+            }
+            if (string.IsNullOrEmpty(aluno.Cpf))
+                ModelState.AddModelError("Cpf", "Campo obrigatório.");
+            else
+            {
+                Regex validaNumeroCPFRegex = new Regex("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$");
+                if (!validaNumeroCPFRegex.IsMatch(aluno.Cpf))
+                    ModelState.AddModelError("Cpf", "CPF Inválido.");
+            }
+            //Falta validar se CPF é valido ou não
+            // Talvez usar API ou AJAX para consultar na receita federal
 
             //Imagem será obrigatio apenas na inclusão. 
             //Na alteração iremos considerar a que já estava salva.
@@ -101,35 +125,6 @@ namespace TrabalhoInterdisciplinar.Controllers
             //    }
             //}
 
-            else
-            {
-                if (aluno.Email.Length < 5)
-                    ModelState.AddModelError("Email", "Email Inválido.");
-                else
-                {
-                    if (aluno.Email.Substring((aluno.Email.Length - 4), 4) != ".com" || aluno.Email.Substring((aluno.Email.Length - 5), 1) == "@"
-                    || aluno.Email.IndexOf("@") == -1 || aluno.Email.IndexOf("@") == 0)
-                        ModelState.AddModelError("Email", "Email Inválido.");
-                }
-            }
-            if (string.IsNullOrEmpty(aluno.Telefone))
-                ModelState.AddModelError("Telefone", "Campo obrigatório.");
-            else
-            {
-                Regex validaNumeroTelefoneRegex = new Regex("^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$");
-                if (!validaNumeroTelefoneRegex.IsMatch(aluno.Telefone))
-                    ModelState.AddModelError("Telefone", "Telefone Inválido.");
-            }
-            if (string.IsNullOrEmpty(aluno.Cpf))
-                ModelState.AddModelError("Cpf", "Campo obrigatório.");
-            else
-            {
-                Regex validaNumeroCPFRegex = new Regex("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$");
-                if (!validaNumeroCPFRegex.IsMatch(aluno.Cpf))
-                    ModelState.AddModelError("Cpf", "CPF Inválido.");
-            }
-            //Falta validar se CPF é valido ou não
-            // Talvez usar API ou AJAX para consultar na receita federal
         }
 
     }
