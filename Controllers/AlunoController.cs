@@ -55,7 +55,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                         LoginViewModel modelLogin = new LoginViewModel()
                         {
                             ID = model.ID,
-                            SenhaHash = "0001"
+                            SenhaHash = Helpers.PasswordHasher.HashPassword("VaiCurintia")
                         };
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);
@@ -83,23 +83,23 @@ namespace TrabalhoInterdisciplinar.Controllers
 
             //Imagem será obrigatio apenas na inclusão. 
             //Na alteração iremos considerar a que já estava salva.
-            if (aluno.Imagem == null && operacao == "I")
-                ModelState.AddModelError("Imagem", "Escolha uma imagem.");
-            if (aluno.Imagem != null && aluno.Imagem.Length / 1024 / 1024 >= 2)
-                ModelState.AddModelError("Imagem", "Imagem limitada a 2 mb.");
-            if (ModelState.IsValid)
-            {
-                //na alteração, se não foi informada a imagem, iremos manter a que já estava salva.
-                if (operacao == "A" && aluno.Imagem == null)
-                {
-                    AlunoViewModel alun = DAO.Consulta(aluno.ID);
-                    aluno.ImagemEmByte = alun.ImagemEmByte;
-                }
-                else
-                {
-                    aluno.ImagemEmByte = ConvertImageToByte(aluno.Imagem);
-                }
-            }
+            //if (aluno.Imagem == null && operacao == "I")
+            //    ModelState.AddModelError("Imagem", "Escolha uma imagem.");
+            //if (aluno.Imagem != null && aluno.Imagem.Length / 1024 / 1024 >= 2)
+            //    ModelState.AddModelError("Imagem", "Imagem limitada a 2 mb.");
+            //if (ModelState.IsValid)
+            //{
+            //    //na alteração, se não foi informada a imagem, iremos manter a que já estava salva.
+            //    if (operacao == "A" && aluno.Imagem == null)
+            //    {
+            //        AlunoViewModel alun = DAO.Consulta(aluno.ID);
+            //        aluno.ImagemEmByte = alun.ImagemEmByte;
+            //    }
+            //    else
+            //    {
+            //        aluno.ImagemEmByte = ConvertImageToByte(aluno.Imagem);
+            //    }
+            //}
 
             else
             {

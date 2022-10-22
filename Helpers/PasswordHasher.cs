@@ -5,9 +5,9 @@ namespace TrabalhoInterdisciplinar.Helpers
 {
     public static class PasswordHasher
     {
-        private static int nIterations = 10101;
-        private static int nHash = 70;
-        private static int salt = 70;
+        private static int nIterations = 10;
+        private static int nHash = 10;
+        private static int salt = 10;
         public static string GenerateSalt(int nSalt)
         {
             var saltBytes = new byte[nSalt];
