@@ -1,8 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Models;
 
@@ -33,9 +38,6 @@ namespace TrabalhoInterdisciplinar.Controllers
                 return null;
         }
 
-
-
-
         public override IActionResult Save(AlunoViewModel model, string Operacao)
         {
             try
@@ -59,11 +61,10 @@ namespace TrabalhoInterdisciplinar.Controllers
                         };
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);
-                        
                     }
                     else
                         DAO.Update(model);
-                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                    TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
                     return RedirectToAction("Create");
                 }
             }
@@ -71,6 +72,62 @@ namespace TrabalhoInterdisciplinar.Controllers
             {
                 return View("Error", new ErrorViewModel(erro.ToString()));
             }
+        }
+
+        public async override Task<IActionResult> SaveAsync(AlunoViewModel model, string Operacao)
+        {
+            try
+            {
+                ValidaDados(model, Operacao);
+                if (ModelState.IsValid == false)
+                {
+                    ViewBag.Operacao = Operacao;
+                    PreencheDadosParaView(Operacao, model);
+                    return View(NomeViewForm, model);
+                }
+                else
+                {
+                    if (Operacao == "I")
+                    {
+                        DAO.Insert(model);
+                        LoginViewModel modelLogin = new LoginViewModel()
+                        {
+                            ID = model.ID,
+                            SenhaHash = Helpers.PasswordHasher.HashPassword("VaiCurintia")
+                        };
+                        LoginDAO login = new LoginDAO();
+                        login.Insert(modelLogin);
+                        await TesteMongoDB();
+                    }
+                    else
+                        DAO.Update(model);
+                    TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
+                    return RedirectToAction("Create");
+                }
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
+        }
+
+        private async Task TesteMongoDB()
+        {
+            HttpClient client = new HttpClient();
+            string baseURL = "http://20.195.194.68:1026";
+
+            var content = JsonConvert.SerializeObject(
+                new {
+                id = "007",
+                type = "agente secreto",
+                Nome = new {
+                    type = "string",
+                    value = "James Bond"
+                    }
+                }
+            );
+            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            await client.PostAsync($"{baseURL}/v2/entities/", httpContent);
         }
 
         protected override void ValidaDados(AlunoViewModel aluno, string operacao)
