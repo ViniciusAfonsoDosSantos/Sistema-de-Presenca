@@ -85,33 +85,33 @@ namespace TrabalhoInterdisciplinar.Controllers
                 return View("Error", new ErrorViewModel(erro.ToString()));
             }
         }
-
-        [HttpPost("/async/")]
-        public async virtual Task<IActionResult> SaveAsync(T model, string Operacao)
+        
+        public async virtual Task<IActionResult> SalvaAssincrono (T model, string Operacao)
         {
-            try
-            {
-                ValidaDados(model, Operacao);
-                if (ModelState.IsValid == false)
-                {
-                    ViewBag.Operacao = Operacao;
-                    PreencheDadosParaView(Operacao, model);
-                    return View(NomeViewForm, model);
-                }
-                else
-                {
-                    if (Operacao == "I")
-                        DAO.Insert(model);
-                    else
-                        DAO.Update(model);
-                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
-                    return RedirectToAction("Create");
-                }
-            }
-            catch (Exception erro)
-            {
-                return View("Error", new ErrorViewModel(erro.ToString()));
-            }
+          try
+          {
+              ValidaDados(model, Operacao);
+              if (ModelState.IsValid == false)
+              {
+                  ViewBag.Operacao = Operacao;
+                  PreencheDadosParaView(Operacao, model);
+                  return View(NomeViewForm, model);
+              }
+              else
+              {
+                  if (Operacao == "I")
+                      DAO.Insert(model);
+                  else
+                      DAO.Update(model);
+                  TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                  return RedirectToAction("Create");
+              }
+          }
+          catch (Exception erro)
+          {
+              return View("Error", new ErrorViewModel(erro.ToString()));
+          }
+          return View("Error", new ErrorViewModel("VAI CURINTIA"));
         }
 
         protected virtual void ValidaDados(T model, string operacao)
