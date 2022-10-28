@@ -4,6 +4,7 @@ using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Threading.Tasks;
 
 namespace TrabalhoInterdisciplinar.Controllers
 {
@@ -84,6 +85,35 @@ namespace TrabalhoInterdisciplinar.Controllers
                 return View("Error", new ErrorViewModel(erro.ToString()));
             }
         }
+        
+        public async virtual Task<IActionResult> SalvaAssincrono (T model, string Operacao)
+        {
+          try
+          {
+              ValidaDados(model, Operacao);
+              if (ModelState.IsValid == false)
+              {
+                  ViewBag.Operacao = Operacao;
+                  PreencheDadosParaView(Operacao, model);
+                  return View(NomeViewForm, model);
+              }
+              else
+              {
+                  if (Operacao == "I")
+                      DAO.Insert(model);
+                  else
+                      DAO.Update(model);
+                  TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                  return RedirectToAction("Create");
+              }
+          }
+          catch (Exception erro)
+          {
+              return View("Error", new ErrorViewModel(erro.ToString()));
+          }
+          return View("Error", new ErrorViewModel("VAI CURINTIA"));
+        }
+
         protected virtual void ValidaDados(T model, string operacao)
         {
             ModelState.Clear();

@@ -1,8 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Models;
 
@@ -33,9 +39,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                 return null;
         }
 
-
-
-
+        [HttpPost]
         public override IActionResult Save(AlunoViewModel model, string Operacao)
         {
             try
@@ -55,15 +59,14 @@ namespace TrabalhoInterdisciplinar.Controllers
                         LoginViewModel modelLogin = new LoginViewModel()
                         {
                             ID = model.ID,
-                            SenhaHash = "0001"
+                            SenhaHash = Helpers.PasswordHasher.HashPassword("VaiCurintia")
                         };
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);
-                        
                     }
                     else
                         DAO.Update(model);
-                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                    TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
                     return RedirectToAction("Create");
                 }
             }
@@ -71,6 +74,69 @@ namespace TrabalhoInterdisciplinar.Controllers
             {
                 return View("Error", new ErrorViewModel(erro.ToString()));
             }
+        }
+
+        public async override Task<IActionResult> SalvaAssincrono(AlunoViewModel model, string Operacao)
+        {
+          try
+          {
+              ValidaDados(model, Operacao);
+              if (ModelState.IsValid == false)
+              {
+                  ViewBag.Operacao = Operacao;
+                  PreencheDadosParaView(Operacao, model);
+                  return View(NomeViewForm, model);
+              }
+              else
+              {
+                  if (Operacao == "I")
+                  {
+                      DAO.Insert(model);
+                      LoginViewModel modelLogin = new LoginViewModel()
+                      {
+                          ID = model.ID,
+                          SenhaHash = Helpers.PasswordHasher.HashPassword("VaiCurintia")
+                      };
+                      LoginDAO login = new LoginDAO();
+                      login.Insert(modelLogin);
+                      await TesteMongoDB();
+                  }
+                  else
+                      DAO.Update(model);
+                  TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
+                  return RedirectToAction("Create");
+              }
+          }
+          catch (Exception erro)
+          {
+              return View("Error", new ErrorViewModel(erro.ToString()));
+          }
+          
+        }
+
+        private async Task TesteMongoDB()
+        {            
+            var url = "<your url>";
+
+            var request = WebRequest.Create(url);
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.Headers.Add("fiware-service", "helixiot");
+            request.Headers.Add("fiware-servicepath", "/");
+
+            var json = JsonConvert.SerializeObject(new { id = "007", type = "vasco" });
+            byte[] byteArray = Encoding.UTF8.GetBytes(json);
+            using var reqStream = request.GetRequestStream();
+            reqStream.Write(byteArray, 0, byteArray.Length);
+
+            using var response = request.GetResponse();
+            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+
+            using var respStream = response.GetResponseStream();
+
+            using var reader = new StreamReader(respStream);
+            string data = reader.ReadToEnd();
+            Console.WriteLine(data);
         }
 
         protected override void ValidaDados(AlunoViewModel aluno, string operacao)

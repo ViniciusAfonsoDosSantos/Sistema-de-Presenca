@@ -14,7 +14,7 @@ namespace TrabalhoInterdisciplinar.DAO
                 imgByte = DBNull.Value;
 
 
-            SqlParameter[] parametros = new SqlParameter[5];
+            SqlParameter[] parametros = new SqlParameter[6];
             parametros[0] = new SqlParameter("id", model.ID);
             parametros[1] = new SqlParameter("nome", model.Nome);
             parametros[2] = new SqlParameter("email", model.Email);
