@@ -1,0 +1,25 @@
+﻿@model List<ProfessorViewModel>
+<table class="table table-striped">
+    <tr>
+        <th>Ação</th>
+        <th>Código</th>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Telefone</th>
+        <th>CPF</th>
+    </tr>
+    @foreach (var professor in Model)
+    {
+        <tr>
+            <td>
+                <a href="/Professor/Edit?id=@professor.ID"><i class="bi bi-pencil-fill"></i></a>
+                <a href="javascript:apagarProfessor(@professor.ID)"><i class="bi bi-trash-fill"></i></a>
+            </td>
+            <td>@professor.ID</td>
+            <td>@professor.Nome</td>
+            <td>@professor.Email</td>
+            <td>@professor.Telefone</td>
+            <td>@professor.CPF</td>
+        </tr>
+    }
+</table>

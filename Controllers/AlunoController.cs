@@ -76,43 +76,43 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
 
-        public async override Task<IActionResult> SalvaAssincrono(AlunoViewModel model, string Operacao)
-        {
-          try
-          {
-              ValidaDados(model, Operacao);
-              if (ModelState.IsValid == false)
-              {
-                  ViewBag.Operacao = Operacao;
-                  PreencheDadosParaView(Operacao, model);
-                  return View(NomeViewForm, model);
-              }
-              else
-              {
-                  if (Operacao == "I")
-                  {
-                      DAO.Insert(model);
-                      LoginViewModel modelLogin = new LoginViewModel()
-                      {
-                          ID = model.ID,
-                          SenhaHash = Helpers.PasswordHasher.HashPassword("VaiCurintia")
-                      };
-                      LoginDAO login = new LoginDAO();
-                      login.Insert(modelLogin);
-                      await TesteMongoDB();
-                  }
-                  else
-                      DAO.Update(model);
-                  TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
-                  return RedirectToAction("Create");
-              }
-          }
-          catch (Exception erro)
-          {
-              return View("Error", new ErrorViewModel(erro.ToString()));
-          }
+        //public async override Task<IActionResult> SalvaAssincrono(AlunoViewModel model, string Operacao)
+        //{
+        //  try
+        //  {
+        //      ValidaDados(model, Operacao);
+        //      if (ModelState.IsValid == false)
+        //      {
+        //          ViewBag.Operacao = Operacao;
+        //          PreencheDadosParaView(Operacao, model);
+        //          return View(NomeViewForm, model);
+        //      }
+        //      else
+        //      {
+        //          if (Operacao == "I")
+        //          {
+        //              DAO.Insert(model);
+        //              LoginViewModel modelLogin = new LoginViewModel()
+        //              {
+        //                  ID = model.ID,
+        //                  SenhaHash = Helpers.PasswordHasher.HashPassword("VaiCurintia")
+        //              };
+        //              LoginDAO login = new LoginDAO();
+        //              login.Insert(modelLogin);
+        //              await TesteMongoDB();
+        //          }
+        //          else
+        //              DAO.Update(model);
+        //          TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
+        //          return RedirectToAction("Create");
+        //      }
+        //  }
+        //  catch (Exception erro)
+        //  {
+        //      return View("Error", new ErrorViewModel(erro.ToString()));
+        //  }
           
-        }
+        //}
 
         private async Task TesteMongoDB()
         {            

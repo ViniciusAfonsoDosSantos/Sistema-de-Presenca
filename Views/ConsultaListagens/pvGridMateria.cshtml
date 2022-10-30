@@ -1,0 +1,24 @@
+﻿@model List<MateriaViewModel>
+<table class="table table-striped">
+    <tr>
+        <th>Ação</th>
+        <th>Código</th>
+        <th>Descricao</th>
+        <th>CargaHoraria</th>
+        <th>CodProfessor</th>
+    </tr>
+    @foreach (var materia in Model)
+    {
+        <tr>
+            <td>
+                <a href="/Materia/Edit?id=@materia.ID"><i class="bi bi-pencil-fill"></i></a>
+                <a href="javascript:apagarMateria(@materia.ID)"><i class="bi bi-trash-fill"></i></a>
+            </td>
+            <td>@materia.ID</td>
+            <td>@materia.Descricao</td>
+            <td>@materia.CargaHoraria</td>
+            <td>@materia.CodProfessor</td>
+        </tr>
+    }
+</table>
+
