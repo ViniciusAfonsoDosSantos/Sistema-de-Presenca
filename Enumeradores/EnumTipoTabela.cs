@@ -4,7 +4,7 @@
     {
         Aluno = 1,
         Professor = 2,
-        Matéria = 3,
+        Materia = 3,
         Aula = 4,
     }
 }

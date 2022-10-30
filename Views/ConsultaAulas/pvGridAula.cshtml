@@ -1,0 +1,16 @@
+﻿@model List<AulaViewModel>
+<table class="table table-striped">
+    <tr>
+        <th>Conteudo</th>
+        <th>Materia</th>
+        <th>DataHoraAula</th>
+    </tr>
+    @foreach (var aula in Model)
+    {
+        <tr>
+            <td>@aula.Conteudo</td>
+            <td>@aula.Materia</td>
+            <td>@aula.DataHoraAula</td>
+        </tr>
+    }
+</table>

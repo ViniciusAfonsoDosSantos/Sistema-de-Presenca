@@ -44,5 +44,21 @@ namespace TrabalhoInterdisciplinar.DAO
                 conexao.Close();
             }
         }
+
+        public static DataTable ExecutaFunctionSelect(string query, SqlParameter[] parametros)
+        {
+            using (SqlConnection conexao = GetConexao())
+            {
+                using (SqlDataAdapter adapter = new SqlDataAdapter(query, conexao))
+                {
+                        if (parametros != null)
+                            adapter.SelectCommand.Parameters.AddRange(parametros);
+                        DataTable tabela = new DataTable();
+                        adapter.Fill(tabela);
+                        conexao.Close();
+                        return tabela;
+                    }
+            }
+        }
     }
 }
