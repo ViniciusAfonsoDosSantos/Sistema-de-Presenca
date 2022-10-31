@@ -35,17 +35,6 @@
 
 </div>
 
-<!-- Modal Login -->
-<div class="modal fade" id="loginImage" tabindex="-1" role="dialog" aria-labelledby="loginImageLabel">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <img id="myImage" class="img-responsive"  src="" alt="">
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
 
     function aplicaFiltroConsultaAvancada() {
@@ -67,13 +56,4 @@
         });
 
     }
-</script>
-
-
-<script>
-    $(document).on("click", ".openImageDialog", function () {
-        console.log('Ok');
-        var myImageId = $(this).data('id');
-        $(".modal-body #myImage").attr("src", myImageId);
-    });
 </script>
