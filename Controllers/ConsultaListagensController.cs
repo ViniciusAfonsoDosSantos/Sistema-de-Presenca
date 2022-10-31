@@ -6,6 +6,7 @@ using System;
 using TrabalhoInterdisciplinar.Models;
 using TrabalhoInterdisciplinar.DAO;
 using Microsoft.AspNetCore.Mvc.Filters;
+using TrabalhoInterdisciplinar.Enumeradores;
 
 namespace TrabalhoInterdisciplinar.Controllers
 {
@@ -36,25 +37,24 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
 
-        public IActionResult ObtemDadosConsultaAvancada(int codigo, int tipoTabela)
+        public IActionResult ObtemDadosConsultaAvancada(EnumTipoTabela tipoTabela, int codigo)
         {
             try
             {
+                int tipo = (int)tipoTabela;
                 switch (tipoTabela)
                 {
-                    case 1:
+                    case EnumTipoTabela.Aluno:
                         return ConsultaAvancadaAluno(codigo);
-                    //case 2:
-                    //    return ConsultaAvancadaProfessor(codigo);
-                    //case 3:
-                    //    return ConsultaAvancadaMateria(codigo);
-                    //case 4:
-                    //    return ConsultaAvancadaProfessor(codigo);
+                    case EnumTipoTabela.Professor:
+                        return ConsultaAvancadaProfessor(codigo);
+                    case EnumTipoTabela.Materia:
+                        return ConsultaAvancadaMateria(codigo);
+                    case EnumTipoTabela.Aula:
+                        return ConsultaAvancadaAula(codigo);
                     default:
                         throw new Exception("A opção não existe");
-                        
                 }
-
             }
             catch (Exception erro)
             {
@@ -62,11 +62,28 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
 
+        private IActionResult ConsultaAvancadaMateria(int codigo)
+        {
+            MateriaDAO dao = new MateriaDAO();
+            if (string.IsNullOrEmpty(codigo.ToString()))
+                codigo = 0;
+            var lista = dao.ConsultaAvancada(codigo);
+            return PartialView("pvGridMateria", lista);
+        }
+
+        private IActionResult ConsultaAvancadaProfessor(int codigo)
+        {
+            ProfessorDAO dao = new ProfessorDAO();
+            if (string.IsNullOrEmpty(codigo.ToString()))
+                codigo = 0;
+            var lista = dao.ConsultaAvancada(codigo);
+            return PartialView("pvGridProfessor", lista);
+        }
+
         public IActionResult ConsultaAvancadaAluno(int codigo)
         {
             try
             {
-
                 AlunoDAO dao = new AlunoDAO();
                 if (string.IsNullOrEmpty(codigo.ToString()))
                     codigo = 0;
@@ -79,56 +96,21 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
 
-        //public IActionResult ConsultaAvancadaProfessor(int codigo)
-        //{
-        //    try
-        //    {
+        public IActionResult ConsultaAvancadaAula(int codigo)
+        {
+            try
+            {
 
-        //        ProfessorDAO dao = new ProfessorDAO();
-        //        if (string.IsNullOrEmpty(codigo.ToString()))
-        //            codigo = 0;
-        //        var lista = dao.ConsultaAvancada(codigo);
-        //        return PartialView("pvGridProfessor", lista);
-        //    }
-        //    catch (Exception erro)
-        //    {
-        //        return Json(new { erro = true, msg = erro.Message });
-        //    }
-        //}
-
-        //public IActionResult ConsultaAvancadaMateria(int codigo)
-        //{
-        //    try
-        //    {
-
-        //        MateriaDAO dao = new MateriaDAO();
-        //        if (string.IsNullOrEmpty(codigo.ToString()))
-        //            codigo = 0;
-        //        var lista = dao.ConsultaAvancada(codigo);
-        //        return PartialView("pvGridMateria", lista);
-        //    }
-        //    catch (Exception erro)
-        //    {
-        //        return Json(new { erro = true, msg = erro.Message });
-        //    }
-        //}
-
-        //public IActionResult ConsultaAvancadaAula(int codigo)
-        //{
-        //    try
-        //    {
-
-        //        AulaDAO dao = new AulaDAO();
-        //        if (string.IsNullOrEmpty(codigo.ToString()))
-        //            codigo = 0;
-        //        var lista = dao.ConsultaAvancada(codigo);
-        //        return PartialView("pvGridAula", lista);
-        //    }
-        //    catch (Exception erro)
-        //    {
-        //        return Json(new { erro = true, msg = erro.Message });
-        //    }
-        //}
-
+                AulaDAO dao = new AulaDAO();
+                if (string.IsNullOrEmpty(codigo.ToString()))
+                    codigo = 0;
+                var lista = dao.ConsultaAvancada(codigo);
+                return PartialView("pvGridAula", lista);
+            }
+            catch (Exception erro)
+            {
+                return Json(new { erro = true, msg = erro.Message });
+            }
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TrabalhoInterdisciplinar.Models;
@@ -32,6 +33,22 @@ namespace TrabalhoInterdisciplinar.DAO
         protected override void SetTabela()
         {
             Tabela = "Materia";
+        }
+
+        public List<MateriaViewModel> ConsultaAvancada(int id)
+        {
+            SqlParameter[] p =
+            {
+                new SqlParameter("ID", id)
+            };
+
+            var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaMateria", p);
+            var lista = new List<MateriaViewModel>();
+            foreach (DataRow dr in tabela.Rows)
+            {
+                lista.Add(MontaModel(dr));
+            }
+            return lista;
         }
     }
 }

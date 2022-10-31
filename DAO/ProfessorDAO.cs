@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using TrabalhoInterdisciplinar.Models;
@@ -50,6 +51,22 @@ namespace TrabalhoInterdisciplinar.DAO
                 codigo = 21;
             return codigo;
 
+        }
+
+        public List<ProfessorViewModel> ConsultaAvancada(int id)
+        {
+            SqlParameter[] p =
+            {
+                new SqlParameter("ID", id)
+            };
+
+            var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaProfessor", p);
+            var lista = new List<ProfessorViewModel>();
+            foreach (DataRow dr in tabela.Rows)
+            {
+                lista.Add(MontaModel(dr));
+            }
+            return lista;
         }
     }
 }

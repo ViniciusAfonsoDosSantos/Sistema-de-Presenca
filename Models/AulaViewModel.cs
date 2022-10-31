@@ -7,6 +7,7 @@ namespace TrabalhoInterdisciplinar.Models
         public string Conteudo { get; set; }
         public DateTime DataHoraAula { get; set; }
         public int CodMateria { get; set; }
+        public string Materia { get; set; }
     }
 
 }

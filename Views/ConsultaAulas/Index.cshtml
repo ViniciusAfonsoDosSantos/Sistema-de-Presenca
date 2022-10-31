@@ -1,0 +1,79 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5 pt-5">
+    <fieldset id="areaFiltro" class="form-group fieldset-personalizado">
+        <legend>Aulas</legend>
+        <input type="hidden" id="AlunoBag" value="@ViewBag.Alunos"/>
+        <input type="hidden" id="MateriaBag" value="@ViewBag.Materias"/>
+        <div class="row justify-content-between">
+            <div class="col-12">
+                <div class="col-lg-4 d-inline-block">
+                    <label for= "materia" class="mt-1">Matéria</label>
+                    <select Name="materia" asp-items="ViewBag.Materias" class="form-control" id="materia-dropdown"> </select>
+                </div>
+                <div class="col-lg-3 d-inline-block">
+                    <label for= "data-inicial" class="mt-1">Data Inicial</label>
+                    <input type="date" Name="data-inicial" class="form-control" id="data-inicial"/>
+                </div>
+                <div class="col-lg-3 d-inline-block">
+                    <label for= "data-final" class="mt-1">Data Final</label>
+                    <input type="date" Name="data-final" class="form-control" id="data-final"/>
+                </div>
+            </div>
+            <div>
+                <br />
+                <input type="button" id="btnFiltro" class="btn btn-success botao-personalizado mr-4" value="Aplicar"
+                       onclick="aplicaFiltroConsultaAvancada()" />
+            </div>
+        </div>
+    </fieldset>
+
+    <div id="resultadoConsulta" class="table-responsive mt-3">
+    </div>
+
+</div>
+
+<!-- Modal Login -->
+<div class="modal fade" id="loginImage" tabindex="-1" role="dialog" aria-labelledby="loginImageLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <img id="myImage" class="img-responsive"  src="" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    function aplicaFiltroConsultaAvancada() {
+        var vIdMateria = document.getElementById('materia-dropdown').value;
+        var vDataInicial = document.getElementById('data-inicial').value;
+        var vDataFinal = document.getElementById('data-final').value;
+
+        $.ajax({
+            url: "/ConsultaAulas/ConsultaAulaAvancada",
+            data: { dataInicial: vDataInicial, dataFinal: vDataFinal, idMateria: vIdMateria },
+            success: function (dados) {
+                if (dados.erro != undefined) {
+                    alert(dados.msg);
+                }
+                else {
+                    document.getElementById('resultadoConsulta').innerHTML = dados;
+                }
+            },
+        });
+
+    }
+</script>
+
+
+<script>
+    $(document).on("click", ".openImageDialog", function () {
+        console.log('Ok');
+        var myImageId = $(this).data('id');
+        $(".modal-body #myImage").attr("src", myImageId);
+    });
+</script>
