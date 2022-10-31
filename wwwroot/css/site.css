@@ -2,6 +2,7 @@
     font-family: 'Jost', sans-serif;
 }
 
+
 .field-validation-error {
     font-size: smaller;
 }
@@ -31,6 +32,10 @@
 
 .escondeSenha {
     margin-left: -35px;
+    cursor: pointer;
+}
+
+.cursor-especial{
     cursor: pointer;
 }
 
@@ -78,6 +83,17 @@
 .botao-personalizado{
     border-radius: 30px;
     width: 100px;
+}
+
+.botao-personalizado-imagem {
+    border-radius: 30px;
+}
+
+input[type="file"]::file-selector-button {
+    border-radius: 30px;
+    border: solid 5px #007bff;
+    background-color: #007bff;
+    color: white;
 }
 
 .campo-personalizado {

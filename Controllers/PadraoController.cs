@@ -73,10 +73,15 @@ namespace TrabalhoInterdisciplinar.Controllers
                 else
                 {
                     if (Operacao == "I")
+                    {
                         DAO.Insert(model);
+                        TempData["AlertMessage"] = "Dado salvo com sucesso...!";
+                    }
                     else
+                    {
                         DAO.Update(model);
-                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                        TempData["AlertMessage"] = "Dado alterado com sucesso...!";
+                    }
                     return RedirectToAction("Create");
                 }
             }
@@ -131,7 +136,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                 ViewBag.Operacao = "A";
                 var model = DAO.Consulta(id);
                 if (model == null)
-                    return RedirectToAction(NomeViewIndex);
+                    return RedirectToAction("Index", "ConsultaListagens");
                 else
                 {
                     PreencheDadosParaView("A", model);
@@ -148,7 +153,7 @@ namespace TrabalhoInterdisciplinar.Controllers
             try
             {
                 DAO.Delete(id);
-                return RedirectToAction(NomeViewIndex);
+                return RedirectToAction("Index", "ConsultaListagens");
             }
             catch (Exception erro)
             {

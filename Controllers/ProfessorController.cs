@@ -37,11 +37,14 @@ namespace TrabalhoInterdisciplinar.Controllers
                         };
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);
+                        TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
 
                     }
                     else
+                    {
                         DAO.Update(model);
-                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                        TempData["AlertMessage"] = "Dado alterado com sucesso...!";
+                    }
                     return RedirectToAction("Create");
                 }
             }

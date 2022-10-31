@@ -19,7 +19,7 @@
             </div>
             <div>
                 <br />
-                <input type="button" id="btnFiltro" class="btn btn-success botao-personalizado mr-4" value="Aplicar"
+                <input type="button" id="btnFiltro" class="btn btn-success botao-personalizado mr-4 " value="Aplicar"
                        onclick="aplicaFiltroConsultaAvancada()" />
             </div>
         </div>
@@ -35,7 +35,7 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body">
-                <img id="myImage" class="img-responsive"  src="" alt="">
+                <img id="myImage" style="width: 100%; object-fit: cover;" class="img-responsive"  src="" alt="">
             </div>
         </div>
     </div>
@@ -69,4 +69,31 @@
         var myImageId = $(this).data('id');
         $(".modal-body #myImage").attr("src", myImageId);
     });
+</script>
+
+<script>
+    function apagarAluno(id) {
+        if (confirm('Confirma a exclusão do registro?'))
+            location.href = '/Aluno/Delete?id=' + id;
+    }
+</script>
+
+<script>
+    function apagarProfessor(id) {
+        if (confirm('Confirma a exclusão do registro?'))
+            location.href = '/Professor/Delete?id=' + id;
+    }
+</script>
+
+<script>
+    function apagarMateria(id) {
+        if (confirm('Confirma a exclusão do registro?'))
+            location.href = '/Materia/Delete?id=' + id;
+    }
+</script>
+<script>
+    function apagarAula(id) {
+        if (confirm('Confirma a exclusão do registro?'))
+            location.href = '/Aula/Delete?id=' + id;
+    }
 </script>

@@ -33,7 +33,7 @@ namespace TrabalhoInterdisciplinar.DAO
             var p = new SqlParameter[]
             {
                 new SqlParameter("id", id),
-                new SqlParameter("tablela", Tabela)
+                new SqlParameter("tabela", Tabela)
             };
 
             HelperDAO.ExecutaProc("spDelete", p);
