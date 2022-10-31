@@ -1,4 +1,5 @@
 ﻿using System;
+using TrabalhoInterdisciplinar.Enumeradores;
 
 namespace TrabalhoInterdisciplinar.Models
 {
@@ -8,6 +9,7 @@ namespace TrabalhoInterdisciplinar.Models
         public DateTime DataHoraAula { get; set; }
         public int CodMateria { get; set; }
         public string Materia { get; set; }
+        public EnumSituacaoAula Situacao { get; set; }
     }
 
 }

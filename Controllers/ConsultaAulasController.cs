@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using TrabalhoInterdisciplinar.DAO;
+using TrabalhoInterdisciplinar.Enumeradores;
 using TrabalhoInterdisciplinar.Models;
 
 namespace TrabalhoInterdisciplinar.Controllers
@@ -36,13 +38,53 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
 
-        public IActionResult ConsultaAulaAvancada(DateTime dataInicial, DateTime dataFinal, int idMateria)
+        public IActionResult ConsultaAulaAvancada(DateTime dataInicial, DateTime dataFinal, int idMateria, EnumSituacaoAula situacao)
         {
+            int situacaoInt = (int)situacao;
             AulaDAO aulaDAO = new AulaDAO();
+            if (dataInicial.Date == Convert.ToDateTime("01/01/0001"))
+                dataInicial = SqlDateTime.MinValue.Value;
+            if (dataFinal.Date == Convert.ToDateTime("01/01/0001"))
+                dataFinal = SqlDateTime.MaxValue.Value;
             if (string.IsNullOrEmpty(idMateria.ToString()))
                 idMateria = 0;
             var lista = aulaDAO.ConsultaAvancada(dataInicial, dataFinal, idMateria);
-            return PartialView("pvGridAula", lista);
+            var listaFinal = new List<AulaViewModel>();
+            foreach (var item in lista)
+            {
+                if(DateTime.Now  < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
+                {
+                    item.Situacao = EnumSituacaoAula.Ativo;
+                }
+                else if(DateTime.Now > item.DataHoraAula.AddMinutes(15))
+                {
+                    item.Situacao = EnumSituacaoAula.Finalizada;
+                }
+                else if(DateTime.Now < item.DataHoraAula.AddMinutes(-15))
+                {
+                    item.Situacao = EnumSituacaoAula.Futura;
+                }
+
+                if(situacaoInt == 1 && (int)item.Situacao == 1)
+                {
+                    listaFinal.Add(item);
+                }
+                else if(situacaoInt == 2 && (int)item.Situacao == 2)
+                {
+                    listaFinal.Add(item);
+                }
+                else if (situacaoInt == 3 && (int)item.Situacao == 3)
+                {
+                    listaFinal.Add(item);
+                }
+                else
+                {
+                    listaFinal.Add(item);
+                }
+            }
+           
+
+            return PartialView("pvGridAula", listaFinal);
         }
          
         private void PreparaDadosParaFiltros()
