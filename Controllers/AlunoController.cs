@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using RestSharp;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -63,6 +65,9 @@ namespace TrabalhoInterdisciplinar.Controllers
                         };
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);
+                        ProvisionaDadosMQTT(model);
+                        //RegistraDadosMQTT(model);
+                        //PublishMQTT(model);
                         TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
                     }
                     else
@@ -81,6 +86,87 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
 
+        public void ProvisionaDadosMQTT(AlunoViewModel model)
+        {
+            var client = new RestClient("http://20.195.194.68:4041/iot/devices");
+            client.Timeout = -1;
+            var request = new RestRequest(Method.POST);
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("fiware-service", "helixiot");
+            request.AddHeader("fiware-servicepath", "/");
+            var body = @"{" + "\n" +
+            @"  ""devices"": [" + "\n" +
+            @"    {" + "\n" +
+            @"      ""device_id"": ""sensordigital002""," + "\n" +
+            @$"      ""entity_name"": ""urn:ngsi-ld:Aluno:{model.ID}""," + "\n" +
+            @"      ""entity_type"": ""Aluno""," + "\n" +
+            @"      ""protocol"": ""PDI-IoTA-UltraLight""," + "\n" +
+            @"      ""transport"": ""MQTT""," + "\n" +
+            @"      ""commands"": [" + "\n" +
+            @"        {""name"": ""create"",""type"": ""command""}," + "\n" +
+            @"        {""name"": ""delete"",""type"": ""command""}," + "\n" +
+            @"        {""name"":""read"", ""type"":""command""}" + "\n" +
+            @"       ]," + "\n" +
+            @"       ""attributes"": [" + "\n" +
+            @"        {""object_id"": ""alunoId"", ""name"": ""alunoid"", ""type"":""Text""}," + "\n" +
+            @"        {""object_id"": ""digitalId"", ""name"": ""digitalid"", ""type"":""Text""}" + "\n" +
+            @"       ]" + "\n" +
+            @"    }" + "\n" +
+            @"  ]" + "\n" +
+            @"}";
+            request.AddParameter("application/json", body, ParameterType.RequestBody);
+            IRestResponse response = client.Execute(request);
+            Console.WriteLine(response.Content);
+        }
+
+        public void RegistraDadosMQTT(AlunoViewModel model)
+        {
+            var client = new RestClient("http://20.195.194.68:1026/v2/registrations");
+            var request = new RestRequest();
+            request.Timeout = -1;
+            request.Method = Method.Post;
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("fiware-service", "helixiot");
+            request.AddHeader("fiware-servicepath", "/");
+            var body = @"{" + "\n" +
+            @"  ""description"": ""Fingerprint Commands""," + "\n" +
+            @"  ""dataProvided"": {" + "\n" +
+            @"    ""entities"": [" + "\n" +
+            @"      {" + "\n" +
+            @$"        ""id"": ""urn:ngsi-ld:Aluno:008"",""type"": ""Aluno""" + "\n" +
+            @"      }" + "\n" +
+            @"    ]," + "\n" +
+            @"    ""attrs"": [ ""create"", ""delete"", ""read"" ]" + "\n" +
+            @"  }," + "\n" +
+            @"  ""provider"": {" + "\n" +
+            @"    ""http"": {""url"": ""http://20.195.194.68:4041""}," + "\n" +
+            @"    ""legacyForwarding"": true" + "\n" +
+            @"  }" + "\n" +
+            @"}";
+            request.AddParameter("application/json", body, ParameterType.RequestBody);
+            RestResponse response = client.Execute(request);
+            Console.WriteLine(response.Content);
+        }
+
+        public void PublishMQTT(AlunoViewModel model)
+        {
+            var client = new RestClient($"http://20.195.194.68:1026/v2/entities/urn:ngsi-ld:Aluno:008/attrs");
+            var request = new RestRequest();
+            request.Timeout = -1;
+            request.Method = Method.Patch;
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("fiware-service", "helixiot");
+            request.AddHeader("fiware-servicepath", "/");
+            var body = @"{" + "\n" +
+            @"  ""create"": {" + "\n" +
+            @"      ""type"" : ""command""," + "\n" +
+            @"      ""value"" : """"" + "\n" +
+            @"  }" + "\n" +
+            @"}";
+            request.AddParameter("application/json", body, ParameterType.RequestBody);
+            RestResponse response = client.Execute(request);
+            Console.WriteLine(response.Content);
+        }
         //public async override Task<IActionResult> SalvaAssincrono(AlunoViewModel model, string Operacao)
         //{
         //  try
@@ -116,7 +202,7 @@ namespace TrabalhoInterdisciplinar.Controllers
         //  {
         //      return View("Error", new ErrorViewModel(erro.ToString()));
         //  }
-          
+
         //}
 
         private async Task TesteMongoDB()
