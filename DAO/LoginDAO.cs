@@ -27,11 +27,7 @@ namespace TrabalhoInterdisciplinar.DAO
 
         protected override void SetTabela()
         {
-            Tabela = "Usuario";
+            Tabela = "Login";
         }
-
-        
-
-
     }
 }

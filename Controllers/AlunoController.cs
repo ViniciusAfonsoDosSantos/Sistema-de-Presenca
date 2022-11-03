@@ -41,6 +41,12 @@ namespace TrabalhoInterdisciplinar.Controllers
                 return null;
         }
 
+        public void TesteMongoDB()
+        {
+            //ProvisionaDadosMQTT();
+            //RegistraDadosMQTT();
+            PublishMQTT();
+        }
         [HttpPost]
         public override IActionResult Save(AlunoViewModel model, string Operacao)
         {
@@ -65,9 +71,6 @@ namespace TrabalhoInterdisciplinar.Controllers
                         };
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);
-                        ProvisionaDadosMQTT(model);
-                        //RegistraDadosMQTT(model);
-                        //PublishMQTT(model);
                         TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
                     }
                     else
@@ -86,19 +89,19 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
 
-        public void ProvisionaDadosMQTT(AlunoViewModel model)
+        public void ProvisionaDadosMQTT()
         {
             var client = new RestClient("http://20.195.194.68:4041/iot/devices");
-            client.Timeout = -1;
-            var request = new RestRequest(Method.POST);
+            var request = new RestRequest();
+            request.Method = Method.Post;
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("fiware-service", "helixiot");
             request.AddHeader("fiware-servicepath", "/");
             var body = @"{" + "\n" +
             @"  ""devices"": [" + "\n" +
             @"    {" + "\n" +
-            @"      ""device_id"": ""sensordigital002""," + "\n" +
-            @$"      ""entity_name"": ""urn:ngsi-ld:Aluno:{model.ID}""," + "\n" +
+            @"      ""device_id"": ""aluno022""," + "\n" +
+            @$"      ""entity_name"": ""urn:ngsi-ld:aluno:022""," + "\n" +
             @"      ""entity_type"": ""Aluno""," + "\n" +
             @"      ""protocol"": ""PDI-IoTA-UltraLight""," + "\n" +
             @"      ""transport"": ""MQTT""," + "\n" +
@@ -115,25 +118,24 @@ namespace TrabalhoInterdisciplinar.Controllers
             @"  ]" + "\n" +
             @"}";
             request.AddParameter("application/json", body, ParameterType.RequestBody);
-            IRestResponse response = client.Execute(request);
+            RestResponse response = client.Execute(request);
             Console.WriteLine(response.Content);
         }
 
-        public void RegistraDadosMQTT(AlunoViewModel model)
+        public void RegistraDadosMQTT()
         {
             var client = new RestClient("http://20.195.194.68:1026/v2/registrations");
             var request = new RestRequest();
-            request.Timeout = -1;
             request.Method = Method.Post;
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("fiware-service", "helixiot");
             request.AddHeader("fiware-servicepath", "/");
             var body = @"{" + "\n" +
-            @"  ""description"": ""Fingerprint Commands""," + "\n" +
+            @"  ""description"": ""Student Commands""," + "\n" +
             @"  ""dataProvided"": {" + "\n" +
             @"    ""entities"": [" + "\n" +
             @"      {" + "\n" +
-            @$"        ""id"": ""urn:ngsi-ld:Aluno:008"",""type"": ""Aluno""" + "\n" +
+            @$"        ""id"": ""urn:ngsi-ld:Aluno:022"",""type"": ""Aluno""" + "\n" +
             @"      }" + "\n" +
             @"    ]," + "\n" +
             @"    ""attrs"": [ ""create"", ""delete"", ""read"" ]" + "\n" +
@@ -148,12 +150,12 @@ namespace TrabalhoInterdisciplinar.Controllers
             Console.WriteLine(response.Content);
         }
 
-        public void PublishMQTT(AlunoViewModel model)
+        public void PublishMQTT()
         {
-            var client = new RestClient($"http://20.195.194.68:1026/v2/entities/urn:ngsi-ld:Aluno:008/attrs");
+            var client = new RestClient($"http://20.195.194.68:1026/v2/entities/urn:ngsi-ld:aluno:022/attrs");
             var request = new RestRequest();
-            request.Timeout = -1;
             request.Method = Method.Patch;
+            request.Timeout = 10000;
             request.AddHeader("Content-Type", "application/json");
             request.AddHeader("fiware-service", "helixiot");
             request.AddHeader("fiware-servicepath", "/");
@@ -205,30 +207,30 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         //}
 
-        private async Task TesteMongoDB()
-        {            
-            var url = "<your url>";
+        //private async Task TesteMongoDB()
+        //{            
+        //    var url = "<your url>";
 
-            var request = WebRequest.Create(url);
-            request.Method = "POST";
-            request.ContentType = "application/json";
-            request.Headers.Add("fiware-service", "helixiot");
-            request.Headers.Add("fiware-servicepath", "/");
+        //    var request = WebRequest.Create(url);
+        //    request.Method = "POST";
+        //    request.ContentType = "application/json";
+        //    request.Headers.Add("fiware-service", "helixiot");
+        //    request.Headers.Add("fiware-servicepath", "/");
 
-            var json = JsonConvert.SerializeObject(new { id = "007", type = "vasco" });
-            byte[] byteArray = Encoding.UTF8.GetBytes(json);
-            using var reqStream = request.GetRequestStream();
-            reqStream.Write(byteArray, 0, byteArray.Length);
+        //    var json = JsonConvert.SerializeObject(new { id = "007", type = "vasco" });
+        //    byte[] byteArray = Encoding.UTF8.GetBytes(json);
+        //    using var reqStream = request.GetRequestStream();
+        //    reqStream.Write(byteArray, 0, byteArray.Length);
 
-            using var response = request.GetResponse();
-            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+        //    using var response = request.GetResponse();
+        //    Console.WriteLine(((HttpWebResponse)response).StatusDescription);
 
-            using var respStream = response.GetResponseStream();
+        //    using var respStream = response.GetResponseStream();
 
-            using var reader = new StreamReader(respStream);
-            string data = reader.ReadToEnd();
-            Console.WriteLine(data);
-        }
+        //    using var reader = new StreamReader(respStream);
+        //    string data = reader.ReadToEnd();
+        //    Console.WriteLine(data);
+        //}
 
         protected override void ValidaDados(AlunoViewModel aluno, string operacao)
         {
