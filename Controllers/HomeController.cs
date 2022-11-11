@@ -46,7 +46,7 @@ namespace TrabalhoInterdisciplinar.Controllers
         //e colocar )
         public void TestingMongoDB()
         {
-            string conn = "mongodb://helix:H3l1xNG@191.233.28.24:27000/?authMechanism=SCRAM-SHA-1";
+            string conn = "";
             var client = new MongoClient(conn);
             var db = client.GetDatabase("sth_helixiot");
             var entity = db.GetCollection<ComandosModel>("sth_/_urn:ngsi-ld:aluno:043_Aluno");
