@@ -46,20 +46,19 @@ namespace TrabalhoInterdisciplinar.Controllers
         //e colocar )
         public void TestingMongoDB()
         {
-            string conn = "helixconnstring";
+            string conn = "mongodb://helix:H3l1xNG@191.233.28.24:27000/?authMechanism=SCRAM-SHA-1";
             var client = new MongoClient(conn);
-            var db = client.GetDatabase("orion-helixiot");
-            var entity = db.GetCollection<BsonDocument>("entities");
-            var docs = entity.Find(new BsonDocument()).ToList();
-            
-            var elements = docs[3].Elements.ToList();
-            int id = elements[0].Value.ToString().IndexOf("aluno:0");
-            var aluno = elements[0].Value.ToString().Substring(id + 7, 2);
+            var db = client.GetDatabase("sth_helixiot");
+            var entity = db.GetCollection<ComandosModel>("sth_/_urn:ngsi-ld:aluno:043_Aluno");
 
-            var presenca = elements[2].Value.AsBsonDocument.Elements.ToList()[1].Value.AsBsonDocument.Elements.ToList()[3].Value.ToString();
-
-            //ver se os dados do historico estao no mesmo modelo, fazer a mesma coisa para pegar a data
-            //Pegar a data, procurar uma aula com o mesmo DateTime e pegar esse valor --> já tenho id do aluno, presenca e a aula, só colocar na tabela
+            //na entidade do aluno, pegar os documentos dos comandos de presença
+            var docs = entity.Find(x => x.attrName=="presenca").ToList();
+            foreach (var doc in docs)
+            {
+                //filtrar a aula da presença e colocar a no banco do SQL
+                Console.WriteLine(doc.recvTime.ToString());
+                //aula sempre começa 19:15 ou 21:05, pegar o que está mais próximo
+            }
         }
     }
 }
