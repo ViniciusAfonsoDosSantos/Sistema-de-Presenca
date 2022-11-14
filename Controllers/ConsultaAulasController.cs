@@ -45,42 +45,48 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         public IActionResult ConsultaAulaAvancada(DateTime dataInicial, DateTime dataFinal, int idMateria, EnumSituacaoAula situacao)
         {
-            AulaDAO aulaDAO = new AulaDAO();
-            if (dataInicial.Date == Convert.ToDateTime("01/01/0001"))
-                dataInicial = SqlDateTime.MinValue.Value;
-            if (dataFinal.Date == Convert.ToDateTime("01/01/0001"))
-                dataFinal = SqlDateTime.MaxValue.Value;
-            if (string.IsNullOrEmpty(idMateria.ToString()))
-                idMateria = 0;
-            var lista = aulaDAO.ConsultaAvancada(dataInicial, dataFinal, idMateria);
-
-            foreach (var item in lista)
+            try
             {
-                if (DateTime.Now < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
+                AulaDAO aulaDAO = new AulaDAO();
+                if (dataInicial.Date == Convert.ToDateTime("01/01/0001"))
+                    dataInicial = SqlDateTime.MinValue.Value;
+                if (dataFinal.Date == Convert.ToDateTime("01/01/0001"))
+                    dataFinal = SqlDateTime.MaxValue.Value;
+                if (string.IsNullOrEmpty(idMateria.ToString()))
+                    idMateria = 0;
+                var lista = aulaDAO.ConsultaAvancada(dataInicial, dataFinal, idMateria);
+
+                foreach (var item in lista)
                 {
-                    item.Situacao = EnumSituacaoAula.Ativo;
+                    if (DateTime.Now < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
+                    {
+                        item.Situacao = EnumSituacaoAula.Ativo;
+                    }
+                    else if (DateTime.Now > item.DataHoraAula.AddMinutes(15))
+                    {
+                        item.Situacao = EnumSituacaoAula.Finalizada;
+                    }
+                    else if (DateTime.Now < item.DataHoraAula.AddMinutes(-15))
+                    {
+                        item.Situacao = EnumSituacaoAula.Futura;
+                    }
                 }
-                else if (DateTime.Now > item.DataHoraAula.AddMinutes(15))
+
+                lista = VerificaSituacao(lista, situacao);
+
+                if (lista.Count != 0)
                 {
-                    item.Situacao = EnumSituacaoAula.Finalizada;
+                    return PartialView("pvGridAula", lista);
                 }
-                else if (DateTime.Now < item.DataHoraAula.AddMinutes(-15))
+                else
                 {
-                    item.Situacao = EnumSituacaoAula.Futura;
+                    return PartialView("pvGridSemResultado");
                 }
             }
-
-            lista = VerificaSituacao(lista, situacao);
-
-            if (lista.Count != 0)
+            catch (Exception erro)
             {
-                return PartialView("pvGridAula", lista);
+                return View("Error", new ErrorViewModel(erro.ToString()));
             }
-            else
-            {
-                return PartialView("pvGridSemResultado");
-            }
-
         }
 
         public List<AulaViewModel> VerificaSituacao(List<AulaViewModel> lista, EnumSituacaoAula situacao)
