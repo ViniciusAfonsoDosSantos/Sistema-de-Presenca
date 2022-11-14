@@ -50,6 +50,28 @@ namespace TrabalhoInterdisciplinar.DAO
             }
             return lista;
         }
+
+        public AulaViewModel ConsultaPorData(DateTime horarioPresenca)
+        {
+            DateTime horarioParam;
+            if ((horarioPresenca.Hour == 19 && horarioPresenca.Minute < 30) || (horarioPresenca.Hour == 18 && horarioPresenca.Minute >= 15))
+                horarioParam = new DateTime(horarioPresenca.Year, horarioPresenca.Month, horarioPresenca.Day, 19, 15, 00, 00);
+            if ((horarioPresenca.Hour == 21 && horarioPresenca.Minute <30) || (horarioPresenca.Hour == 20 && horarioPresenca.Minute >= 55))
+                horarioParam = new DateTime(horarioPresenca.Year, horarioPresenca.Month, horarioPresenca.Day, 21, 5, 00, 00);
+            else
+                throw new Exception("Horario inválido");
+
+            SqlParameter[] p =
+            {
+                new SqlParameter("data", horarioParam)
+            };
+            var tabela = HelperDAO.ExecutaProcSelect("spConsultaAulaPorData", p);
+            foreach (DataRow dr in tabela.Rows)
+            {
+                return MontaModel(dr);
+            }
+            return null;
+        }
         public List<AulaViewModel> ConsultaAvancada(DateTime dataInicio, DateTime dataFim, int idMateria)
         {
             SqlParameter[] p =
