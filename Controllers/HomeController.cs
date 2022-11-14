@@ -4,10 +4,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Bson;
 using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -45,24 +48,6 @@ namespace TrabalhoInterdisciplinar.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        //Verificar se existem novas presenças
-        //Pegar o dado e que está no histórico do orion e passar para a tabela de presença no sql (pegar a data e hora desse dado
-        //e colocar )
-        public void TestingMongoDB()
-        {
-            string conn = "";
-            var client = new MongoClient(conn);
-            var db = client.GetDatabase("sth_helixiot");
-            var entity = db.GetCollection<ComandosModel>("sth_/_urn:ngsi-ld:aluno:043_Aluno");
-
-            //na entidade do aluno, pegar os documentos dos comandos de presença
-            var docs = entity.Find(x => x.attrName=="presenca").ToList();
-            foreach (var doc in docs)
-            {
-                //filtrar a aula da presença e colocar a no banco do SQL
-                Console.WriteLine(doc.recvTime.ToString());
-                //aula sempre começa 19:15 ou 21:05, pegar o que está mais próximo
-            }
-        }
+        
     }
 }
