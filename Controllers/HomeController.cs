@@ -33,7 +33,6 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         public IActionResult Index()
         {
-            //TestaMongoDB();
             if (HelperControllers.VerificaProfessorLogado(HttpContext.Session))
                 ViewBag.LogadoProfessor = true;
             else if (HelperControllers.VerificaAlunoLogado(HttpContext.Session))

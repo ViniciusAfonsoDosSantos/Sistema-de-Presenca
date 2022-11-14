@@ -59,7 +59,7 @@ namespace TrabalhoInterdisciplinar.DAO
             if ((horarioPresenca.Hour == 21 && horarioPresenca.Minute <30) || (horarioPresenca.Hour == 20 && horarioPresenca.Minute >= 55))
                 horarioParam = new DateTime(horarioPresenca.Year, horarioPresenca.Month, horarioPresenca.Day, 21, 5, 00, 00);
             else
-                throw new Exception("Horario inválido");
+                horarioParam = new DateTime(horarioPresenca.Year, horarioPresenca.Month, horarioPresenca.Day, 16, 00, 00, 00);
 
             SqlParameter[] p =
             {
