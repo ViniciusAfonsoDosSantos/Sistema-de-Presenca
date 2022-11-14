@@ -14,10 +14,12 @@ namespace TrabalhoInterdisciplinar.Controllers
         //e colocar )
         public IActionResult Index()
         {
-            TestingMongoDB();
-            return View();
+            PresencaDAO dao = new PresencaDAO();
+            PegaDadosMongoDB();
+            var lista = dao.Listagem();
+            return View("Index", lista);
         }
-        public void TestingMongoDB()
+        public void PegaDadosMongoDB()
         {
             string conn = "mongodb://helix:H3l1xNG@191.233.28.24:27000/?authMechanism=SCRAM-SHA-1";
             var client = new MongoClient(conn);
@@ -29,6 +31,7 @@ namespace TrabalhoInterdisciplinar.Controllers
             PresencaDAO dao = new PresencaDAO();
             List<DateTime> listaDatasPresencas = dao.NovasPresencas(31);
             var docs = entity.Find(x => x.attrName == "presenca").ToList();
+            docs.Reverse();
             foreach (var doc in docs)
             {
                 if (listaDatasPresencas.Contains(doc.recvTime))
@@ -43,7 +46,6 @@ namespace TrabalhoInterdisciplinar.Controllers
                     int idAluno = 31;
                     AtribuiPresencaAluno(idAluno, aula.ID, doc.attrValue, doc.recvTime);
                 }
-
             }
         }
 

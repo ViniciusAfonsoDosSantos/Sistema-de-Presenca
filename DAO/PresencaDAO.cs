@@ -32,6 +32,7 @@ namespace TrabalhoInterdisciplinar.DAO
             }
             return lista;
         }
+
         protected override PresencaViewModel MontaModel(DataRow registro)
         {
             PresencaViewModel p = new PresencaViewModel()
