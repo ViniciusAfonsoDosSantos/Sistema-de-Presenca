@@ -6,21 +6,26 @@ using System.Collections.Generic;
 using System.Data.SqlTypes;
 using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Enumeradores;
+using TrabalhoInterdisciplinar.Helpers;
 using TrabalhoInterdisciplinar.Models;
 
 namespace TrabalhoInterdisciplinar.Controllers
 {
-    public class ConsultaAulasController: Controller
+    public class ConsultaAulasController : Controller
     {
         protected bool ExigeAutenticacao { get; set; } = true;
 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (ExigeAutenticacao && !HelperControllers.VerificaProfessorLogado(HttpContext.Session))
+            if (ExigeAutenticacao && (!HelperControllers.VerificaAlunoLogado(HttpContext.Session) &&
+                !HelperControllers.VerificaProfessorLogado(HttpContext.Session)))
                 context.Result = RedirectToAction("Index", "Home");
             else
             {
-                ViewBag.LogadoProfessor = true;
+                if (HelperControllers.VerificaProfessorLogado(HttpContext.Session))
+                    ViewBag.LogadoProfessor = true;
+                else if (HelperControllers.VerificaAlunoLogado(HttpContext.Session))
+                    ViewBag.LogadoAluno = true;
                 base.OnActionExecuting(context);
             }
         }
@@ -40,7 +45,6 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         public IActionResult ConsultaAulaAvancada(DateTime dataInicial, DateTime dataFinal, int idMateria, EnumSituacaoAula situacao)
         {
-            int situacaoInt = (int)situacao;
             AulaDAO aulaDAO = new AulaDAO();
             if (dataInicial.Date == Convert.ToDateTime("01/01/0001"))
                 dataInicial = SqlDateTime.MinValue.Value;
@@ -49,27 +53,47 @@ namespace TrabalhoInterdisciplinar.Controllers
             if (string.IsNullOrEmpty(idMateria.ToString()))
                 idMateria = 0;
             var lista = aulaDAO.ConsultaAvancada(dataInicial, dataFinal, idMateria);
-            var listaFinal = new List<AulaViewModel>();
+
             foreach (var item in lista)
             {
-                if(DateTime.Now  < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
+                if (DateTime.Now < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
                 {
                     item.Situacao = EnumSituacaoAula.Ativo;
                 }
-                else if(DateTime.Now > item.DataHoraAula.AddMinutes(15))
+                else if (DateTime.Now > item.DataHoraAula.AddMinutes(15))
                 {
                     item.Situacao = EnumSituacaoAula.Finalizada;
                 }
-                else if(DateTime.Now < item.DataHoraAula.AddMinutes(-15))
+                else if (DateTime.Now < item.DataHoraAula.AddMinutes(-15))
                 {
                     item.Situacao = EnumSituacaoAula.Futura;
                 }
+            }
 
-                if(situacaoInt == 1 && (int)item.Situacao == 1)
+            lista = VerificaSituacao(lista, situacao);
+
+            if (lista.Count != 0)
+            {
+                return PartialView("pvGridAula", lista);
+            }
+            else
+            {
+                return PartialView("pvGridSemResultado");
+            }
+
+        }
+
+        public List<AulaViewModel> VerificaSituacao(List<AulaViewModel> lista, EnumSituacaoAula situacao)
+        {
+            int situacaoInt = (int)situacao;
+            var listaFinal = new List<AulaViewModel>();
+            foreach (var item in lista)
+            {
+                if (situacaoInt == 1 && (int)item.Situacao == 1)
                 {
                     listaFinal.Add(item);
                 }
-                else if(situacaoInt == 2 && (int)item.Situacao == 2)
+                else if (situacaoInt == 2 && (int)item.Situacao == 2)
                 {
                     listaFinal.Add(item);
                 }
@@ -77,20 +101,18 @@ namespace TrabalhoInterdisciplinar.Controllers
                 {
                     listaFinal.Add(item);
                 }
-                else
+                else if (situacaoInt == 0)
                 {
                     listaFinal.Add(item);
                 }
             }
-           
-
-            return PartialView("pvGridAula", listaFinal);
+            return listaFinal;
         }
-         
+
         private void PreparaDadosParaFiltros()
         {
             MateriaDAO materiaDAO = new MateriaDAO();
-            var  materias = materiaDAO.Listagem();
+            var materias = materiaDAO.Listagem();
             List<SelectListItem> listaMaterias = new List<SelectListItem>();
             listaMaterias.Add(new SelectListItem("Selecione uma matéria...", "0"));
             foreach (var materia in materias)

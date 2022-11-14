@@ -46,28 +46,3 @@
     </form>
 </div>
 
-
-<!--Toast Javascript-->
-@section Scripts
-{
-    <script>
-        $(document).ready(function() {
-
-            var message = $('#AlertMessage').text();
-            if(message !== ''){
-                $('.toast').toast('show')
-            }
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-
-            $('#Telefone').mask('(00) 00000-0000', { placeholder: "(xx) xxxxx-xxxx" });
-            $('#CPF').mask('000.000.000-00', { reverse: true, placeholder: "xxx.xxx.xxx-xx" });
-        });
-        
-    </script>
-
-    
-}

@@ -3,14 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RestSharp;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using TrabalhoInterdisciplinar.ConexãoHelix;
 using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Models;
 
@@ -24,11 +28,6 @@ namespace TrabalhoInterdisciplinar.Controllers
             GeraProximoId = true;
         }
 
-        /// <summary>
-        /// Converte a imagem recebida no form em um vetor de bytes
-        /// </summary>
-        /// <param name="file"></param>
-        /// <returns></returns>
         public byte[] ConvertImageToByte(IFormFile file)
         {
             if (file != null)
@@ -41,13 +40,6 @@ namespace TrabalhoInterdisciplinar.Controllers
                 return null;
         }
 
-        public void TesteMongoDB()
-        {
-            //ProvisionaDadosMQTT();
-            //RegistraDadosMQTT();
-            PublishMQTT();
-        }
-        [HttpPost]
         public override IActionResult Save(AlunoViewModel model, string Operacao)
         {
             try
@@ -63,6 +55,8 @@ namespace TrabalhoInterdisciplinar.Controllers
                 {
                     if (Operacao == "I")
                     {
+                        AlunoDAO novoAlunoDAO = new AlunoDAO();
+                        model.IdBiometria = novoAlunoDAO.ProximoIdBiometria();
                         DAO.Insert(model);
                         LoginViewModel modelLogin = new LoginViewModel()
                         {
@@ -72,15 +66,29 @@ namespace TrabalhoInterdisciplinar.Controllers
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);
                         TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
+                        ConexaoMQTT conectaHelix = new ConexaoMQTT();
+                        conectaHelix.ProvisionaDadosMQTT(model);
+                        conectaHelix.RegistraDadosMQTT(model);
+                        conectaHelix.PublishMQTT(model);
+                        /*  Timer
+                        Stopwatch cronometro = new Stopwatch();
+                        cronometro.Start();
+                        do
+                        {
+                            Thread.Sleep(200);
+                        }
+                        while (cronometro.Elapsed.TotalSeconds <= 45);
+                        //conectaHelix.RecebeMQTT();
+                        */
+                        return RedirectToAction("Create");
                     }
                     else
                     {
                         DAO.Update(model);
                         TempData["AlertMessage"] = "Dado alterado com sucesso...!";
+                        return RedirectToAction("Index", "ConsultaListagens");
                     }
                         
-                    
-                    return RedirectToAction("Create");
                 }
             }
             catch (Exception erro)
@@ -89,85 +97,69 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
 
-        public void ProvisionaDadosMQTT()
+        protected override void ValidaDados(AlunoViewModel aluno, string operacao)
         {
-            var client = new RestClient("http://20.195.194.68:4041/iot/devices");
-            var request = new RestRequest();
-            request.Method = Method.Post;
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("fiware-service", "helixiot");
-            request.AddHeader("fiware-servicepath", "/");
-            var body = @"{" + "\n" +
-            @"  ""devices"": [" + "\n" +
-            @"    {" + "\n" +
-            @"      ""device_id"": ""aluno022""," + "\n" +
-            @$"      ""entity_name"": ""urn:ngsi-ld:aluno:022""," + "\n" +
-            @"      ""entity_type"": ""Aluno""," + "\n" +
-            @"      ""protocol"": ""PDI-IoTA-UltraLight""," + "\n" +
-            @"      ""transport"": ""MQTT""," + "\n" +
-            @"      ""commands"": [" + "\n" +
-            @"        {""name"": ""create"",""type"": ""command""}," + "\n" +
-            @"        {""name"": ""delete"",""type"": ""command""}," + "\n" +
-            @"        {""name"":""read"", ""type"":""command""}" + "\n" +
-            @"       ]," + "\n" +
-            @"       ""attributes"": [" + "\n" +
-            @"        {""object_id"": ""alunoId"", ""name"": ""alunoid"", ""type"":""Text""}," + "\n" +
-            @"        {""object_id"": ""digitalId"", ""name"": ""digitalid"", ""type"":""Text""}" + "\n" +
-            @"       ]" + "\n" +
-            @"    }" + "\n" +
-            @"  ]" + "\n" +
-            @"}";
-            request.AddParameter("application/json", body, ParameterType.RequestBody);
-            RestResponse response = client.Execute(request);
-            Console.WriteLine(response.Content);
+            base.ValidaDados(aluno, operacao);
+            if (string.IsNullOrEmpty(aluno.Nome))
+                ModelState.AddModelError("Nome", "Campo obrigatório.");
+            if (string.IsNullOrEmpty(aluno.Email))
+                ModelState.AddModelError("Email", "Campo obrigatório.");
+            else
+            {
+                Regex validaEmailRegex = new Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+                if (!validaEmailRegex.IsMatch(aluno.Email))
+                    ModelState.AddModelError("Email", "Email Inválido.");
+            }
+            if (string.IsNullOrEmpty(aluno.Telefone))
+                ModelState.AddModelError("Telefone", "Campo obrigatório.");
+            else
+            {
+                Regex validaNumeroTelefoneRegex = new Regex("^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$");
+                if (!validaNumeroTelefoneRegex.IsMatch(aluno.Telefone))
+                    ModelState.AddModelError("Telefone", "Telefone Inválido.");
+            }
+            if (string.IsNullOrEmpty(aluno.Cpf))
+                ModelState.AddModelError("Cpf", "Campo obrigatório.");
+            else
+            {
+                Regex validaNumeroCPFRegex = new Regex("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$");
+                if (!validaNumeroCPFRegex.IsMatch(aluno.Cpf))
+                    ModelState.AddModelError("Cpf", "CPF Inválido.");
+            }
+            //Falta validar se CPF é valido ou não
+            // Talvez usar API ou AJAX para consultar na receita federal
+            if (aluno.Imagem == null && operacao == "I")
+                ModelState.AddModelError("Imagem", "Escolha uma imagem.");
+            if (aluno.Imagem != null && aluno.Imagem.Length / 1024 / 1024 >= 2)
+                ModelState.AddModelError("Imagem", "Imagem limitada a 2 mb.");
+            if (ModelState.IsValid)
+            {
+                if (operacao == "A" && aluno.Imagem == null)
+                {
+                    AlunoViewModel alun = DAO.Consulta(aluno.ID);
+                    aluno.ImagemEmByte = alun.ImagemEmByte;
+                }
+                else
+                {
+                    aluno.ImagemEmByte = ConvertImageToByte(aluno.Imagem);
+                }
+            }
+
         }
 
-        public void RegistraDadosMQTT()
+        public override IActionResult Delete(int id)
         {
-            var client = new RestClient("http://20.195.194.68:1026/v2/registrations");
-            var request = new RestRequest();
-            request.Method = Method.Post;
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("fiware-service", "helixiot");
-            request.AddHeader("fiware-servicepath", "/");
-            var body = @"{" + "\n" +
-            @"  ""description"": ""Student Commands""," + "\n" +
-            @"  ""dataProvided"": {" + "\n" +
-            @"    ""entities"": [" + "\n" +
-            @"      {" + "\n" +
-            @$"        ""id"": ""urn:ngsi-ld:Aluno:022"",""type"": ""Aluno""" + "\n" +
-            @"      }" + "\n" +
-            @"    ]," + "\n" +
-            @"    ""attrs"": [ ""create"", ""delete"", ""read"" ]" + "\n" +
-            @"  }," + "\n" +
-            @"  ""provider"": {" + "\n" +
-            @"    ""http"": {""url"": ""http://20.195.194.68:4041""}," + "\n" +
-            @"    ""legacyForwarding"": true" + "\n" +
-            @"  }" + "\n" +
-            @"}";
-            request.AddParameter("application/json", body, ParameterType.RequestBody);
-            RestResponse response = client.Execute(request);
-            Console.WriteLine(response.Content);
-        }
-
-        public void PublishMQTT()
-        {
-            var client = new RestClient($"http://20.195.194.68:1026/v2/entities/urn:ngsi-ld:aluno:022/attrs");
-            var request = new RestRequest();
-            request.Method = Method.Patch;
-            request.Timeout = 10000;
-            request.AddHeader("Content-Type", "application/json");
-            request.AddHeader("fiware-service", "helixiot");
-            request.AddHeader("fiware-servicepath", "/");
-            var body = @"{" + "\n" +
-            @"  ""create"": {" + "\n" +
-            @"      ""type"" : ""command""," + "\n" +
-            @"      ""value"" : """"" + "\n" +
-            @"  }" + "\n" +
-            @"}";
-            request.AddParameter("application/json", body, ParameterType.RequestBody);
-            RestResponse response = client.Execute(request);
-            Console.WriteLine(response.Content);
+            try
+            {
+                DAO.Delete(id);
+                LoginDAO login = new LoginDAO();
+                login.Delete(id);
+                return RedirectToAction("Index", "ConsultaListagens");
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
         }
         //public async override Task<IActionResult> SalvaAssincrono(AlunoViewModel model, string Operacao)
         //{
@@ -232,59 +224,6 @@ namespace TrabalhoInterdisciplinar.Controllers
         //    Console.WriteLine(data);
         //}
 
-        protected override void ValidaDados(AlunoViewModel aluno, string operacao)
-        {
-            base.ValidaDados(aluno, operacao);
-            if (string.IsNullOrEmpty(aluno.Nome))
-                ModelState.AddModelError("Nome", "Campo obrigatório.");
-            if (string.IsNullOrEmpty(aluno.Email))
-                ModelState.AddModelError("Email", "Campo obrigatório.");
-            else
-            {
-                Regex validaEmailRegex = new Regex("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
-                if (!validaEmailRegex.IsMatch(aluno.Email))
-                    ModelState.AddModelError("Email", "Email Inválido.");
-            }
-            if (string.IsNullOrEmpty(aluno.Telefone))
-                ModelState.AddModelError("Telefone", "Campo obrigatório.");
-            else
-            {
-                Regex validaNumeroTelefoneRegex = new Regex("^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$");
-                if (!validaNumeroTelefoneRegex.IsMatch(aluno.Telefone))
-                    ModelState.AddModelError("Telefone", "Telefone Inválido.");
-            }
-            if (string.IsNullOrEmpty(aluno.Cpf))
-                ModelState.AddModelError("Cpf", "Campo obrigatório.");
-            else
-            {
-                Regex validaNumeroCPFRegex = new Regex("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$");
-                if (!validaNumeroCPFRegex.IsMatch(aluno.Cpf))
-                    ModelState.AddModelError("Cpf", "CPF Inválido.");
-            }
-            //Falta validar se CPF é valido ou não
-            // Talvez usar API ou AJAX para consultar na receita federal
-
-            //Imagem será obrigatio apenas na inclusão. 
-            //Na alteração iremos considerar a que já estava salva.
-            if (aluno.Imagem == null && operacao == "I")
-                ModelState.AddModelError("Imagem", "Escolha uma imagem.");
-            if (aluno.Imagem != null && aluno.Imagem.Length / 1024 / 1024 >= 2)
-                ModelState.AddModelError("Imagem", "Imagem limitada a 2 mb.");
-            if (ModelState.IsValid)
-            {
-                //na alteração, se não foi informada a imagem, iremos manter a que já estava salva.
-                if (operacao == "A" && aluno.Imagem == null)
-                {
-                    AlunoViewModel alun = DAO.Consulta(aluno.ID);
-                    aluno.ImagemEmByte = alun.ImagemEmByte;
-                }
-                else
-                {
-                    aluno.ImagemEmByte = ConvertImageToByte(aluno.Imagem);
-                }
-            }
-
-        }
 
     }
 }

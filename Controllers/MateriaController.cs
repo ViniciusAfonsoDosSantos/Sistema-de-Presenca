@@ -47,5 +47,26 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
             ViewBag.Professores = listaProfessores;
         }
+
+        public override IActionResult Delete(int id)
+        {
+            try
+            {
+                AulaDAO aula = new AulaDAO();
+                foreach (var item in aula.Listagem())
+                    if (item.CodMateria == id)
+                    {
+                        TempData["AlertMessage"] = "Não foi possivel deletar. Matéria possui aulas em aberto.";
+                        return RedirectToAction("Index", "ConsultaListagens");
+                    }
+                DAO.Delete(id);
+                return RedirectToAction("Index", "ConsultaListagens");
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
+        }
+
     }
 }

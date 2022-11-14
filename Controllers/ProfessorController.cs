@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System;
 using System.Text.RegularExpressions;
 using TrabalhoInterdisciplinar.DAO;
@@ -38,14 +39,16 @@ namespace TrabalhoInterdisciplinar.Controllers
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);
                         TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                        return RedirectToAction("Create");
 
                     }
                     else
                     {
                         DAO.Update(model);
                         TempData["AlertMessage"] = "Dado alterado com sucesso...!";
+                        return RedirectToAction("Index", "ConsultaListagens");
                     }
-                    return RedirectToAction("Create");
+                    
                 }
             }
             catch (Exception erro)
@@ -85,6 +88,28 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
             //Falta validar se CPF é valido ou não
             // Talvez usar API ou AJAX para consultar na receita federal
+        }
+
+        public override IActionResult Delete(int id)
+        {
+            try
+            {
+                MateriaDAO materia = new MateriaDAO(); 
+                foreach(var item in materia.Listagem())
+                    if(item.CodProfessor == id)
+                    {
+                        TempData["AlertMessage"] = "Não foi possivel deletar. Professor possui matérias em aberto.";
+                        return RedirectToAction("Index", "ConsultaListagens");
+                    }
+                DAO.Delete(id);
+                LoginDAO login = new LoginDAO();
+                login.Delete(id);
+                return RedirectToAction("Index", "ConsultaListagens");
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
         }
     }
 }

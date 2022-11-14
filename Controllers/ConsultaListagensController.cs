@@ -7,6 +7,7 @@ using TrabalhoInterdisciplinar.Models;
 using TrabalhoInterdisciplinar.DAO;
 using Microsoft.AspNetCore.Mvc.Filters;
 using TrabalhoInterdisciplinar.Enumeradores;
+using TrabalhoInterdisciplinar.Helpers;
 
 namespace TrabalhoInterdisciplinar.Controllers
 {
@@ -20,7 +21,10 @@ namespace TrabalhoInterdisciplinar.Controllers
                 context.Result = RedirectToAction("Index", "Home");
             else
             {
-                ViewBag.LogadoProfessor = true;
+                if (HelperControllers.VerificaProfessorLogado(HttpContext.Session))
+                    ViewBag.LogadoProfessor = true;
+                else if (HelperControllers.VerificaAlunoLogado(HttpContext.Session))
+                    ViewBag.LogadoAluno = true;
                 base.OnActionExecuting(context);
             }
         }
@@ -62,13 +66,22 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
 
+        //Fazer herança aqui em baixo
         private IActionResult ConsultaAvancadaMateria(int codigo)
         {
             MateriaDAO dao = new MateriaDAO();
             if (string.IsNullOrEmpty(codigo.ToString()))
                 codigo = 0;
             var lista = dao.ConsultaAvancada(codigo);
-            return PartialView("pvGridMateria", lista);
+
+            if (lista.Count != 0)
+            {
+                return PartialView("pvGridMateria", lista);
+            }
+            else
+            {
+                return PartialView("pvGridSemResultado");
+            }
         }
 
         private IActionResult ConsultaAvancadaProfessor(int codigo)
@@ -77,7 +90,16 @@ namespace TrabalhoInterdisciplinar.Controllers
             if (string.IsNullOrEmpty(codigo.ToString()))
                 codigo = 0;
             var lista = dao.ConsultaAvancada(codigo);
-            return PartialView("pvGridProfessor", lista);
+
+            if (lista.Count != 0)
+            {
+                return PartialView("pvGridProfessor", lista);
+            }
+            else
+            {
+                return PartialView("pvGridSemResultado");
+            }
+            
         }
 
         public IActionResult ConsultaAvancadaAluno(int codigo)
@@ -88,7 +110,16 @@ namespace TrabalhoInterdisciplinar.Controllers
                 if (string.IsNullOrEmpty(codigo.ToString()))
                     codigo = 0;
                 var lista = dao.ConsultaAvancada(codigo);
-                return PartialView("pvGridAluno", lista);
+
+                if (lista.Count != 0)
+                {
+                    return PartialView("pvGridAluno", lista);
+                }
+                else
+                {
+                    return PartialView("pvGridSemResultado");
+                }
+                
             }
             catch (Exception erro)
             {
@@ -105,7 +136,16 @@ namespace TrabalhoInterdisciplinar.Controllers
                 if (string.IsNullOrEmpty(codigo.ToString()))
                     codigo = 0;
                 var lista = dao.ConsultaAvancada(codigo);
-                return PartialView("pvGridAula", lista);
+
+                if (lista.Count != 0)
+                {
+                    return PartialView("pvGridAula", lista);
+                }
+                else
+                {
+                    return PartialView("pvGridSemResultado");
+                }
+                
             }
             catch (Exception erro)
             {

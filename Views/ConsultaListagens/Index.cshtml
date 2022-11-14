@@ -3,6 +3,20 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!--Toast-->
+<span id="AlertMessage" class="d-none">@TempData["AlertMessage"]</span>
+
+<div aria-live="polite" aria-atomic="true" style="position: relative;">
+    <div class="toast container-personalizado bg-danger" data-delay="6000" style="width: 435px; max-width: 450px;">
+        <div class="toast-delete text-white bg-danger ml-1">
+            <strong class="mr-auto">@TempData["AlertMessage"]</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    </div>
+</div>
+
 <div class="container mt-5 pt-5">
     <fieldset id="areaFiltro" class="form-group fieldset-personalizado">
         <legend>Listagens</legend>
@@ -20,7 +34,7 @@
             <div>
                 <br />
                 <input type="button" id="btnFiltro" class="btn btn-success botao-personalizado mr-4 " value="Aplicar"
-                       onclick="aplicaFiltroConsultaAvancada()" />
+                       onclick="aplicaFiltroConsultaAvancadaListagem()" />
             </div>
         </div>
     </fieldset>
@@ -41,59 +55,4 @@
     </div>
 </div>
 
-<script>
 
-    function aplicaFiltroConsultaAvancada() {
-        var vCodigo = document.getElementById('codigo').value;
-        var vtipoTabela = document.getElementById('tipoTabela').value;
-        $.ajax({
-            url: "/ConsultaListagens/ObtemDadosConsultaAvancada",
-            data: { codigo: vCodigo, tipoTabela: vtipoTabela },
-            success: function (dados) {
-                if (dados.erro != undefined) {
-                    alert(dados.msg);
-                }
-                else {
-                    document.getElementById('resultadoConsulta').innerHTML = dados;
-                }
-            },
-        });
-
-    }
-</script>
-
-
-<script>
-    $(document).on("click", ".openImageDialog", function () {
-        console.log('Ok');
-        var myImageId = $(this).data('id');
-        $(".modal-body #myImage").attr("src", myImageId);
-    });
-</script>
-
-<script>
-    function apagarAluno(id) {
-        if (confirm('Confirma a exclusão do registro?'))
-            location.href = '/Aluno/Delete?id=' + id;
-    }
-</script>
-
-<script>
-    function apagarProfessor(id) {
-        if (confirm('Confirma a exclusão do registro?'))
-            location.href = '/Professor/Delete?id=' + id;
-    }
-</script>
-
-<script>
-    function apagarMateria(id) {
-        if (confirm('Confirma a exclusão do registro?'))
-            location.href = '/Materia/Delete?id=' + id;
-    }
-</script>
-<script>
-    function apagarAula(id) {
-        if (confirm('Confirma a exclusão do registro?'))
-            location.href = '/Aula/Delete?id=' + id;
-    }
-</script>
