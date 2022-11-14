@@ -24,8 +24,7 @@ namespace TrabalhoInterdisciplinar.ConexãoHelix
             @"      ""transport"": ""MQTT""," + "\n" +
             @"      ""commands"": [" + "\n" +
             @"        {""name"": ""create"",""type"": ""command""}," + "\n" +
-            @"        {""name"": ""delete"",""type"": ""command""}," + "\n" +
-            @"        {""name"":""read"", ""type"":""command""}" + "\n" +
+            @"        {""name"": ""read"",""type"": ""command""}" + "\n" +
             @"       ]," + "\n" +
             @"       ""attributes"": [" + "\n" +
             @"        {""object_id"": ""alunoId"", ""name"": ""alunoid"", ""type"":""Text""}," + "\n" +
@@ -55,7 +54,7 @@ namespace TrabalhoInterdisciplinar.ConexãoHelix
             @$"        ""id"": ""urn:ngsi-ld:aluno:0{model.IdBiometria}"",""type"": ""Aluno""" + "\n" +
             @"      }" + "\n" +
             @"    ]," + "\n" +
-            @"    ""attrs"": [ ""create"", ""delete"", ""read"" ]" + "\n" +
+            @"    ""attrs"": [ ""create"", ""read"" ]" + "\n" +
             @"  }," + "\n" +
             @"  ""provider"": {" + "\n" +
             @"    ""http"": {""url"": ""http://191.233.28.24:4041""}," + "\n" +
