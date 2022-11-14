@@ -10,6 +10,5 @@ namespace TrabalhoInterdisciplinar.Models
         public DateTime DataHoraPresenca { get; set; }
         public string AlunoNome { get; set; }
         public string AulaDescricao { get; set; }
-
     }
 }
