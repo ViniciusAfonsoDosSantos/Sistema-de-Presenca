@@ -35,7 +35,15 @@ namespace TrabalhoInterdisciplinar.Controllers
                     return RedirectToAction("index", "Home");
                 }
 
-                HttpContext.Session.SetString("Logado", "true");
+                if(model.ID.ToString().Substring(0, 1) == "2")
+                {
+                    HttpContext.Session.SetString("LogadoProfessor", "true");
+                }
+                else
+                {
+                    HttpContext.Session.SetString("LogadoAluno", "true");
+                }
+                
                 return RedirectToAction("index", "Home");
             }
             else

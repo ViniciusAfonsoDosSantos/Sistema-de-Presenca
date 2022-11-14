@@ -24,7 +24,7 @@
         <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
         <input type="hidden" name="ID" value="@Model.ID" />
         <label for="Descricao" class="mt-1">Descrição</label>
-        <textarea name="Descricao" class="form-control campo-personalizado">@Model.Descricao</textarea>
+        <textarea name="Descricao" class="form-control campo-personalizado ">@Model.Descricao</textarea>
         <span asp-validation-for="Descricao" class="text-danger"></span>
         <br />
         <label for="CargaHoraria" class="mt-1">Carga Horaria</label>
@@ -40,17 +40,3 @@
 
     </form>
 </div>
-
-<!--Toast Javascript-->
-@section Scripts
-    {
-    <script>
-        $(document).ready(function () {
-
-            var message = $('#AlertMessage').text();
-            if (message !== '') {
-                $('.toast').toast('show')
-            }
-        });
-    </script>
-}

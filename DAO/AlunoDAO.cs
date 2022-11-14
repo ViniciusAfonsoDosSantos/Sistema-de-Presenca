@@ -15,13 +15,14 @@ namespace TrabalhoInterdisciplinar.DAO
                 imgByte = DBNull.Value;
 
 
-            SqlParameter[] parametros = new SqlParameter[6];
+            SqlParameter[] parametros = new SqlParameter[7];
             parametros[0] = new SqlParameter("id", model.ID);
             parametros[1] = new SqlParameter("nome", model.Nome);
             parametros[2] = new SqlParameter("email", model.Email);
             parametros[3] = new SqlParameter("telefone", model.Telefone);
             parametros[4] = new SqlParameter("cpf", model.Cpf);
             parametros[5] = new SqlParameter("imagem", imgByte);
+            parametros[6] = new SqlParameter("IdBiometria", model.IdBiometria);
 
             return parametros;
         }
@@ -36,10 +37,10 @@ namespace TrabalhoInterdisciplinar.DAO
                 Telefone = registro["telefone"].ToString(),
                 Cpf = registro["cpf"].ToString()
             };
-
+            if (registro["idBiometria"] != DBNull.Value)
+                a.IdBiometria = Convert.ToInt32(registro["IdBiometria"]);
             if (registro["imagem"] != DBNull.Value)
                 a.ImagemEmByte = registro["imagem"] as byte[];
-
             return a;
         }
 
@@ -62,6 +63,12 @@ namespace TrabalhoInterdisciplinar.DAO
                 codigo = 31;
             return codigo;
          
+        }
+
+        public int ProximoIdBiometria()
+        {   
+            var tabela = HelperDAO.ExecutaProcSelect("spProximoIdBiometria", null);
+            return Convert.ToInt32(tabela.Rows[0][0].ToString());
         }
 
         public List<AlunoViewModel> ConsultaAvancada(int id)

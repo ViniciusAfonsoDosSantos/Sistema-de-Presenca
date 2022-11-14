@@ -52,6 +52,7 @@
     margin-top: 0.5rem;
 }
 
+/* -> Cria uma animação nos itens do navbar
 .nav-personalizado::after {
     display: inline-block;
     content: "";
@@ -65,7 +66,7 @@
 .nav-personalizado:hover::after {
     width: 100%;
 }
-
+*/
 
 .imagemPrincipal {
     background: no-repeat url(/Imagens/background1.jpg);
@@ -120,6 +121,10 @@ input[type="file"]::file-selector-button {
     height: 225px;
 }
 
+.textoTamanho{
+    font-size: 18px;
+}
+
 .toast {
     position: absolute;
     top: 75px;
@@ -128,6 +133,10 @@ input[type="file"]::file-selector-button {
 
 .toast-header {
     background-color: #28a745;
+    border-bottom: none;
+}
+
+.toast-delete {
     border-bottom: none;
 }
 

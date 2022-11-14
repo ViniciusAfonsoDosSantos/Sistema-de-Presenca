@@ -76,5 +76,24 @@ namespace TrabalhoInterdisciplinar.DAO
                 lista.Add(MontaModel(registro));
             return lista;
         }
+
+        /*
+        public List<T> ConsultaAvancada(int id)
+        {
+            SqlParameter[] p =
+            {
+                new SqlParameter("ID", id),
+                new SqlParameter("tabela", Tabela)
+            };
+
+            var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaMateria", p);
+            var lista = new List<T>();
+            foreach (DataRow dr in tabela.Rows)
+            {
+                lista.Add(MontaModel(dr));
+            }
+            return lista;
+        }
+        */
     }
 }

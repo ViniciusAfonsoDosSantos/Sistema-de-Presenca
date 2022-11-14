@@ -42,11 +42,9 @@
 
         <br />
         <input type="file" name="Imagem" id="Imagem" onchange="exibirImagem()" class="btn btn-secondary botao-personalizado-imagem">
-        @if(Model.ImagemEmBase64!= null)
-        {
-            <img id="imgPreview" src="data:image/jpeg;base64,@Model.ImagemEmBase64" class="img-responsive"
-             width="100">
-        }
+        <img id="imgPreview" src="data:image/jpeg;base64,@Model.ImagemEmBase64" class="img-responsive"
+         width="100">
+        
         <span asp-validation-for="Imagem" class="text-danger"></span>
 
         <br />
@@ -57,48 +55,7 @@
     </form>
 
 </div>
-<div>
-    <form class="form-group" method="post" action="TesteMongoDB">
-        <input type="submit" value="Cadastrar" class="btn btn-success botao-personalizado mt-1" />
-    </form>
-</div>
 
 
-<!--Toast Javascript-->
-@section Scripts
-    {
-    <script>
-        $(document).ready(function () {
-
-            var message = $('#AlertMessage').text();
-            if (message !== '') {
-                $('.toast').toast('show')
-            }
-        });
-    </script>
-
-    <script>
-        $(document).ready(function () {
-
-            $('#Telefone').mask('(00) 00000-0000', { placeholder: "(xx) xxxxx-xxxx" });
-            $('#Cpf').mask('000.000.000-00', { reverse: true, placeholder: "xxx.xxx.xxx-xx" });
-        });
-
-    </script>
-
-
-
-    <!--JS IMAGEM :)-->
-
-    <script>
-        function exibirImagem() {
-            var oFReader = new FileReader();
-            oFReader.readAsDataURL(document.getElementById("Imagem").files[0]);
-            oFReader.onload = function (oFREvent) {
-                document.getElementById("imgPreview").src = oFREvent.target.result;
-            };
-        }
-    </script>
-}
 
 

@@ -5,6 +5,7 @@ using TrabalhoInterdisciplinar.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Threading.Tasks;
+using TrabalhoInterdisciplinar.Helpers;
 
 namespace TrabalhoInterdisciplinar.Controllers
 {
@@ -22,7 +23,10 @@ namespace TrabalhoInterdisciplinar.Controllers
                 context.Result = RedirectToAction("Index", "Home");
             else
             {
-                ViewBag.LogadoProfessor = true;
+                if (HelperControllers.VerificaProfessorLogado(HttpContext.Session))
+                    ViewBag.LogadoProfessor = true;
+                else if (HelperControllers.VerificaAlunoLogado(HttpContext.Session))
+                    ViewBag.LogadoAluno = true;
                 base.OnActionExecuting(context);
             }
         }
@@ -76,13 +80,15 @@ namespace TrabalhoInterdisciplinar.Controllers
                     {
                         DAO.Insert(model);
                         TempData["AlertMessage"] = "Dado salvo com sucesso...!";
+                        return RedirectToAction("Create");
                     }
                     else
                     {
                         DAO.Update(model);
                         TempData["AlertMessage"] = "Dado alterado com sucesso...!";
+                        return RedirectToAction("Index", "ConsultaListagens");
                     }
-                    return RedirectToAction("Create");
+                   
                 }
             }
             catch (Exception erro)
@@ -91,34 +97,6 @@ namespace TrabalhoInterdisciplinar.Controllers
             }
         }
         
-        public async virtual Task<IActionResult> SalvaAssincrono (T model, string Operacao)
-        {
-          try
-          {
-              ValidaDados(model, Operacao);
-              if (ModelState.IsValid == false)
-              {
-                  ViewBag.Operacao = Operacao;
-                  PreencheDadosParaView(Operacao, model);
-                  return View(NomeViewForm, model);
-              }
-              else
-              {
-                  if (Operacao == "I")
-                      DAO.Insert(model);
-                  else
-                      DAO.Update(model);
-                  TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
-                  return RedirectToAction("Create");
-              }
-          }
-          catch (Exception erro)
-          {
-              return View("Error", new ErrorViewModel(erro.ToString()));
-          }
-          return View("Error", new ErrorViewModel("VAI CURINTIA"));
-        }
-
         protected virtual void ValidaDados(T model, string operacao)
         {
             ModelState.Clear();
@@ -148,7 +126,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                 return View("Error", new ErrorViewModel(erro.ToString()));
             }
         }
-        public IActionResult Delete(int id)
+        public virtual IActionResult Delete(int id)
         {
             try
             {
@@ -160,5 +138,52 @@ namespace TrabalhoInterdisciplinar.Controllers
                 return View("Error", new ErrorViewModel(erro.ToString()));
             }
         }
+
+        /*
+        private IActionResult ConsultaAvançada(int codigo)
+        {
+            if (string.IsNullOrEmpty(codigo.ToString()))
+                codigo = 0;
+            var lista = DAO.ConsultaAvancada(codigo);
+
+            if (lista.Count != 0)
+            {
+                return PartialView("pvGridMateria", lista);
+            }
+            else
+            {
+                return PartialView("pvGridSemResultado");
+            }
+        }
+
+        */
+        /*public async virtual Task<IActionResult> SalvaAssincrono(T model, string Operacao)
+        {
+            try
+            {
+                ValidaDados(model, Operacao);
+                if (ModelState.IsValid == false)
+                {
+                    ViewBag.Operacao = Operacao;
+                    PreencheDadosParaView(Operacao, model);
+                    return View(NomeViewForm, model);
+                }
+                else
+                {
+                    if (Operacao == "I")
+                        DAO.Insert(model);
+                    else
+                        DAO.Update(model);
+                    TempData["AlertMessage"] = "Dado salvo com sucesso...!           ";
+                    return RedirectToAction("Create");
+                }
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
+            return View("Error", new ErrorViewModel("VAI CURINTIA"));
+        }*/
+
     }
 }

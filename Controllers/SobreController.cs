@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using TrabalhoInterdisciplinar.Helpers;
 using TrabalhoInterdisciplinar.Models;
 
 namespace TrabalhoInterdisciplinar.Controllers
@@ -12,7 +13,10 @@ namespace TrabalhoInterdisciplinar.Controllers
     {
         public IActionResult Index()
         {
-            ViewBag.LogadoProfessor = HelperControllers.VerificaProfessorLogado(HttpContext.Session);
+            if (HelperControllers.VerificaProfessorLogado(HttpContext.Session))
+                ViewBag.LogadoProfessor = true;
+            else if (HelperControllers.VerificaAlunoLogado(HttpContext.Session))
+                ViewBag.LogadoAluno = true;
             return View();
         }
 
