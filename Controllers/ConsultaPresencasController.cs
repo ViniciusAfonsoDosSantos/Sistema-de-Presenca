@@ -29,31 +29,43 @@ namespace TrabalhoInterdisciplinar.Controllers
             //na entidade do aluno, pegar os documentos dos comandos de presença
             //pegar as novas presencas do aluno, ordenar pelas mais recentes
             PresencaDAO dao = new PresencaDAO();
-            List<DateTime> listaDatasPresencas = dao.NovasPresencas(31);
+            List<string> listaDatasPresencas = dao.NovasPresencas(31);
             var docs = entity.Find(x => x.attrName == "presenca").ToList();
             docs.Reverse();
             foreach (var doc in docs)
             {
-                if (listaDatasPresencas.Contains(doc.recvTime))
+                if (listaDatasPresencas.Contains(doc.recvTime.ToString("dd/MM/yyyy HH:mm")))
                 {
                     return;
                 }
-                Console.WriteLine(doc.recvTime.ToString());
-                AulaViewModel aula = ObterAulaDia(doc.recvTime);
-                if (aula != null)
-                {
-                    //Achar aluno pelo IdBiometria
-                    int idAluno = 31;
-                    AtribuiPresencaAluno(idAluno, aula.ID, doc.attrValue, doc.recvTime);
-                }
+                ColocarPresencaSQL(doc);
+            }
+        }
+
+        private void ColocarPresencaSQL(ComandosModel doc)
+        {
+            AulaViewModel aula = ObterAulaDia(doc.recvTime);
+            if (aula != null)
+            {
+                //Achar aluno pelo IdBiometria
+                int idAluno = 31;
+                AtribuiPresencaAluno(idAluno, aula.ID, doc.attrValue, doc.recvTime);
             }
         }
 
         private void AtribuiPresencaAluno(int idAluno, int codAula, string situacao, DateTime horarioPresenca)
         {
             //verificar ultimas presencas desse aluno;
-            PresencaDAO presenca = new PresencaDAO();
-            presenca.Insert(new PresencaViewModel { CodAluno = idAluno, CodAula = codAula, Presente = situacao, DataHoraPresenca = horarioPresenca });
+            //try
+            //{
+                //PresencaDAO presenca = new PresencaDAO();
+                //presenca.Insert(new PresencaViewModel { CodAluno = idAluno, CodAula = codAula, Presente = situacao, DataHoraPresenca = horarioPresenca });
+            //}
+            //catch (Exception)
+            //{
+
+            //}
+            //exception aqui, preciso fazer todo o caminho dos métodos para retornar à página de erro
         }
 
         private AulaViewModel ObterAulaDia(DateTime recvTime)

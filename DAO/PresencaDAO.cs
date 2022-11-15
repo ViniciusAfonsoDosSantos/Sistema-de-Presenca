@@ -19,16 +19,16 @@ namespace TrabalhoInterdisciplinar.DAO
             return parametros;
         }
 
-        public List<DateTime> NovasPresencas(int codAluno)
+        public List<string> NovasPresencas(int codAluno)
         {
             SqlParameter[] p = new SqlParameter[1];
             p[0] = new SqlParameter("codAluno", codAluno);
             var tabela = HelperDAO.ExecutaProcSelect("spConsultaDataPresenca", p);
-            var lista = new List<DateTime>(); //colocar só para DateTime
+            var lista = new List<string>(); //colocar só para DateTime
             foreach (DataRow dr in tabela.Rows)
             {
                 //lista.Add(MontaModel(dr[]
-                lista.Add(Convert.ToDateTime(dr["HorarioPresenca"]));
+                lista.Add(Convert.ToDateTime(dr["HorarioPresenca"]).ToString("dd/MM/yyyy HH:mm"));
             }
             return lista;
         }
