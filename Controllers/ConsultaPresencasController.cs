@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using TrabalhoInterdisciplinar.DAO;
+using TrabalhoInterdisciplinar.Enumeradores;
 using TrabalhoInterdisciplinar.Models;
 
 namespace TrabalhoInterdisciplinar.Controllers
@@ -11,7 +14,6 @@ namespace TrabalhoInterdisciplinar.Controllers
     public class ConsultaPresencasController:Controller
     {
         protected bool ExigeAutenticacao { get; set; } = true;
-
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             if (ExigeAutenticacao && !HelperControllers.VerificaProfessorLogado(HttpContext.Session))
@@ -25,15 +27,17 @@ namespace TrabalhoInterdisciplinar.Controllers
                 base.OnActionExecuting(context);
             }
         }
+
         //Verificar se existem novas presenças
         //Pegar o dado e que está no histórico do orion e passar para a tabela de presença no sql (pegar a data e hora desse dado
         //e colocar )
         public IActionResult Index()
         {
-            PresencaDAO dao = new PresencaDAO();
-            PegaDadosMongoDB();
-            var lista = dao.Listagem();
-            return View("Index", lista);
+            //PresencaDAO dao = new PresencaDAO();
+            //PegaDadosMongoDB();
+            //var lista = dao.Listagem();
+            PreparaDadosParaFiltros();
+            return View("Index");
         }
         public void PegaDadosMongoDB()
         {
@@ -45,40 +49,93 @@ namespace TrabalhoInterdisciplinar.Controllers
             //na entidade do aluno, pegar os documentos dos comandos de presença
             //pegar as novas presencas do aluno, ordenar pelas mais recentes
             PresencaDAO dao = new PresencaDAO();
-            List<DateTime> listaDatasPresencas = dao.NovasPresencas(31);
+            List<string> listaDatasPresencas = dao.NovasPresencas(31);
             var docs = entity.Find(x => x.attrName == "presenca").ToList();
             docs.Reverse();
             foreach (var doc in docs)
             {
-                foreach(var dataPresenca in listaDatasPresencas)
+                if (listaDatasPresencas.Contains(doc.recvTime.ToString("dd/MM/yyyy HH:mm")))
                 {
-                    if (doc.recvTime.ToString("dd/MM/yyyy HH:mm") == dataPresenca.ToString("dd/MM/yyyy HH:mm"))
-                    {
-                        return;
-                    }
+                    return;
                 }
-                Console.WriteLine(doc.recvTime.ToString());
-                AulaViewModel aula = ObterAulaDia(doc.recvTime);
-                if (aula != null)
-                {
-                    //Achar aluno pelo IdBiometria
-                    int idAluno = 31;
-                    AtribuiPresencaAluno(idAluno, aula.ID, doc.attrValue, doc.recvTime);
-                }
+                ColocarPresencaSQL(doc);
+            }
+        }
+
+        private void ColocarPresencaSQL(ComandosModel doc)
+        {
+            AulaViewModel aula = ObterAulaDia(doc.recvTime);
+            if (aula != null)
+            {
+                //Achar aluno pelo IdBiometria
+                int idAluno = 31;
+                AtribuiPresencaAluno(idAluno, aula.ID, doc.attrValue, doc.recvTime);
             }
         }
 
         private void AtribuiPresencaAluno(int idAluno, int codAula, string situacao, DateTime horarioPresenca)
         {
             //verificar ultimas presencas desse aluno;
-            PresencaDAO presenca = new PresencaDAO();
-            presenca.Insert(new PresencaViewModel { CodAluno = idAluno, CodAula = codAula, Presente = situacao, DataHoraPresenca = horarioPresenca });
+            //try
+            //{
+                PresencaDAO presenca = new PresencaDAO();
+                presenca.Insert(new PresencaViewModel { CodAluno = idAluno, CodAula = codAula, Presente = situacao, DataHoraPresenca = horarioPresenca });
+            //}
+            //catch (Exception)
+            //{
+
+            //}
+            //exception aqui, preciso fazer todo o caminho dos métodos para retornar à página de erro
         }
 
         private AulaViewModel ObterAulaDia(DateTime recvTime)
         {
             AulaDAO aula = new AulaDAO();
             return aula.ConsultaPorData(recvTime);
+        }
+
+        public IActionResult ConsultaPresencaAvancada(int idAluno, int idAula)
+        {
+            PresencaDAO presencaDAO = new PresencaDAO();
+            
+            if (string.IsNullOrEmpty(idAluno.ToString()))
+            {
+                idAluno = 0;
+            }
+            if (string.IsNullOrEmpty(idAula.ToString()))
+            {
+                idAula = 0;
+            }
+            var lista = presencaDAO.ConsultaAvancada(idAluno, idAula);
+            return PartialView("pvGridPresenca", lista);
+
+        }
+        private void PreparaDadosParaFiltros()
+        {
+            AulaDAO aulaDAO = new AulaDAO();
+            var aulas = aulaDAO.Listagem();
+
+            AlunoDAO alunoDAO = new AlunoDAO();
+            var alunos = alunoDAO.Listagem();
+
+            List<SelectListItem> listaAulas = new List<SelectListItem>();
+            listaAulas.Add(new SelectListItem("Selecione uma aula...", "0"));
+            foreach (var aula in aulas)
+            {
+                MateriaDAO materiaDAO = new MateriaDAO();
+                SelectListItem item = new SelectListItem($"{aula.Conteudo} - {materiaDAO.Consulta(aula.CodMateria).Descricao}", aula.ID.ToString());
+                listaAulas.Add(item);
+            }
+
+            List<SelectListItem> listaAlunos = new List<SelectListItem>();
+            listaAlunos.Add(new SelectListItem("Selecione um aluno...", "0"));
+            foreach (var aluno in alunos)
+            {
+                SelectListItem item = new SelectListItem(aluno.Nome, aluno.ID.ToString());
+                listaAlunos.Add(item);
+            }
+            ViewBag.Alunos = listaAlunos;
+            ViewBag.Aulas = listaAulas;
         }
     }
 }
