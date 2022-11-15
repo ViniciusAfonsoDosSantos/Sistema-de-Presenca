@@ -19,8 +19,11 @@ namespace TrabalhoInterdisciplinar.Controllers
             base.ValidaDados(aula, operacao);
             if (string.IsNullOrEmpty(aula.Conteudo))
                 ModelState.AddModelError("Conteudo", "Campo obrigatório.");
-            if (aula.DataHoraAula < DateTime.Now)
-                ModelState.AddModelError("DataHoraAula", "Não é permitido criar aulas no passado.");
+            if(operacao == "I")
+            {
+                if (aula.DataHoraAula < DateTime.Now)
+                    ModelState.AddModelError("DataHoraAula", "Não é permitido criar aulas no passado.");
+            }
             if (aula.DataHoraAula > DateTime.MaxValue)
                 ModelState.AddModelError("DataHoraAula", "Data inválida.");
             if (aula.CodMateria <= 0)

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,21 @@ namespace TrabalhoInterdisciplinar.Controllers
 {
     public class ConsultaPresencasController:Controller
     {
+        protected bool ExigeAutenticacao { get; set; } = true;
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (ExigeAutenticacao && !HelperControllers.VerificaProfessorLogado(HttpContext.Session))
+                context.Result = RedirectToAction("Index", "Home");
+            else
+            {
+                if (HelperControllers.VerificaProfessorLogado(HttpContext.Session))
+                    ViewBag.LogadoProfessor = true;
+                else if (HelperControllers.VerificaAlunoLogado(HttpContext.Session))
+                    ViewBag.LogadoAluno = true;
+                base.OnActionExecuting(context);
+            }
+        }
         //Verificar se existem novas presenças
         //Pegar o dado e que está no histórico do orion e passar para a tabela de presença no sql (pegar a data e hora desse dado
         //e colocar )
@@ -34,9 +50,12 @@ namespace TrabalhoInterdisciplinar.Controllers
             docs.Reverse();
             foreach (var doc in docs)
             {
-                if (listaDatasPresencas.Contains(doc.recvTime))
+                foreach(var dataPresenca in listaDatasPresencas)
                 {
-                    return;
+                    if (doc.recvTime.ToString("dd/MM/yyyy HH:mm") == dataPresenca.ToString("dd/MM/yyyy HH:mm"))
+                    {
+                        return;
+                    }
                 }
                 Console.WriteLine(doc.recvTime.ToString());
                 AulaViewModel aula = ObterAulaDia(doc.recvTime);

@@ -27,10 +27,20 @@
         <textarea name="Conteudo" value="@Model.Conteudo" class="form-control campo-personalizado ">@Model.Conteudo</textarea>
         <span asp-validation-for="Conteudo" class="text-danger"></span>
         <br />
-        <label for="DataHoraAula" class="mt-1">Data e Hora</label>
-        <input asp-for="DataHoraAula" class="form-control campo-personalizado" />
-        <span asp-validation-for="DataHoraAula" class="text-danger"></span>
-        <br />
+        @if(ViewBag.Operacao == "I")
+        {
+            <label for="DataHoraAula" class="mt-1">Data e Hora</label>
+            <input asp-for="DataHoraAula" class="form-control campo-personalizado" />
+            <span asp-validation-for="DataHoraAula" class="text-danger"></span>
+            <br />
+        }
+        else
+        {
+            <label for="DataHoraAula" class="mt-1">Data e Hora</label>
+            <input asp-for="DataHoraAula" class="form-control campo-personalizado" readonly/>
+            <span asp-validation-for="DataHoraAula" class="text-danger"></span>
+            <br />
+        }
         <label for="CodMateria" class="mt-1">Código da Matéria</label>
         <select asp-for="CodMateria" asp-items="ViewBag.Materias" class="form-control campo-personalizado"></select>
         <span asp-validation-for="CodMateria" class="text-danger"></span>

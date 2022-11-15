@@ -17,31 +17,30 @@
     </div>
 </div>
 
-<div class="container mt-5 pt-5">
-    <fieldset id="areaFiltro" class="form-group fieldset-personalizado">
-        <legend>Listagens</legend>
-        <div class="row justify-content-between">
-            <div class="col-9">
-                <div class="col-lg-6 d-inline-block">
+<div class="container-fluid mt-5 pt-5">
+    <div class="row">
+        <div class="col-md-2">
+            <fieldset id="areaFiltro" class="form-group fieldset-personalizado">
+                <legend>Listagens</legend>
+                <div class="mt-2">
                     <label for="codigo" class="mt-1">Código</label>
                     <input type="number" id="codigo" class="form-control campo-personalizado" />
                 </div>
-                <div class="col-lg-4 d-inline-block">
+                <div class="mt-2">
                     <label for="tipoTabela" class="mt-1 ">Tabela</label>
                     <select id="tipoTabela" class="form-control campo-personalizado" asp-items="Html.GetEnumSelectList<EnumTipoTabela>()"></select>
                 </div>
-            </div>
-            <div>
-                <br />
-                <input type="button" id="btnFiltro" class="btn btn-success botao-personalizado mr-4 " value="Aplicar"
-                       onclick="aplicaFiltroConsultaAvancadaListagem()" />
-            </div>
+                <div class="mt-4 d-flex justify-content-center">
+                    <br />
+                    <input type="button" id="btnFiltro" class="btn btn-success botao-personalizado mx-auto" value="Aplicar"
+                           onclick="aplicaFiltroConsultaAvancadaListagem()" />
+                </div>
+
+            </fieldset>
         </div>
-    </fieldset>
-
-    <div id="resultadoConsulta" class="table-responsive mt-3">
+        <div id="resultadoConsulta" class="table-responsive mt-3 mx-auto col-md-8">
+        </div>
     </div>
-
 </div>
 
 <!-- Modal Login -->

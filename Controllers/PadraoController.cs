@@ -85,7 +85,6 @@ namespace TrabalhoInterdisciplinar.Controllers
                     else
                     {
                         DAO.Update(model);
-                        TempData["AlertMessage"] = "Dado alterado com sucesso...!";
                         return RedirectToAction("Index", "ConsultaListagens");
                     }
                    
