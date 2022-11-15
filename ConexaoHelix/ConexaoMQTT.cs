@@ -66,7 +66,7 @@ namespace TrabalhoInterdisciplinar.ConexãoHelix
             Console.WriteLine(response.Content);
         }
 
-        public void PublishMQTT(AlunoViewModel model)
+        public void PublishCreateMQTT(AlunoViewModel model)
         {
             var client = new RestClient($"http://191.233.28.24:1026/v2/entities/urn:ngsi-ld:aluno:0{model.IdBiometria}/attrs");
             var request = new RestRequest();
@@ -77,6 +77,26 @@ namespace TrabalhoInterdisciplinar.ConexãoHelix
             request.AddHeader("fiware-servicepath", "/");
             var body = @"{" + "\n" +
             @"  ""create"": {" + "\n" +
+            @"      ""type"" : ""command""," + "\n" +
+            @"      ""value"" : """"" + "\n" +
+            @"  }" + "\n" +
+            @"}";
+            request.AddParameter("application/json", body, ParameterType.RequestBody);
+            RestResponse response = client.Execute(request);
+            Console.WriteLine(response.Content);
+        }
+
+        public void PublishReadMQTT()
+        {
+            var client = new RestClient("http://191.233.28.24:1026/v2/entities/urn:ngsi-ld:aluno:003/attrs");
+            var request = new RestRequest();
+            request.Method = Method.Patch;
+            request.Timeout = 10000;
+            request.AddHeader("Content-Type", "application/json");
+            request.AddHeader("fiware-service", "helixiot");
+            request.AddHeader("fiware-servicepath", "/");
+            var body = @"{" + "\n" +
+            @"  ""read"": {" + "\n" +
             @"      ""type"" : ""command""," + "\n" +
             @"      ""value"" : """"" + "\n" +
             @"  }" + "\n" +

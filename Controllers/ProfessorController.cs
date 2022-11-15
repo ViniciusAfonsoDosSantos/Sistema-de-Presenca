@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Models;
@@ -82,7 +83,7 @@ namespace TrabalhoInterdisciplinar.Controllers
             else
             {
                 Regex validaNumeroCPFRegex = new Regex("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$");
-                if (!validaNumeroCPFRegex.IsMatch(professor.CPF) || ValidaCPF(professor.CPF))
+                if (!validaNumeroCPFRegex.IsMatch(professor.CPF) || !ValidaCPF(professor.CPF))
                     ModelState.AddModelError("CPF", "CPF Inválido.");
             }
             
@@ -100,9 +101,33 @@ namespace TrabalhoInterdisciplinar.Controllers
             cpf = cpf.Replace(".", "").Replace("-", "");
             if (cpf.Length != 11)
                 return false;
+
+            switch (cpf)
+            {
+                case "11111111111":
+                    return false;
+                case "00000000000":
+                    return false;
+                case "2222222222":
+                    return false;
+                case "33333333333":
+                    return false;
+                case "44444444444":
+                    return false;
+                case "55555555555":
+                    return false;
+                case "66666666666":
+                    return false;
+                case "77777777777":
+                    return false;
+                case "88888888888":
+                    return false;
+                case "99999999999":
+                    return false;
+            }
+
             tempCpf = cpf.Substring(0, 9);
             soma = 0;
-
             for (int i = 0; i < 9; i++)
                 soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
             resto = soma % 11;
@@ -122,6 +147,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                 resto = 11 - resto;
             digito = digito + resto.ToString();
             return cpf.EndsWith(digito);
+
         }
 
         public override IActionResult Delete(int id)

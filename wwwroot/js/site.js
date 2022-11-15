@@ -72,21 +72,65 @@ $(document).on("click", ".openImageDialog", function () {
 
 /*Deletar Dados*/
 function apagarAluno(id) {
-    if (confirm('Confirma a exclusão do registro?'))
-        location.href = '/Aluno/Delete?id=' + id;
+    Swal.fire({
+        title: 'Confirma a exclusão do registro?',
+        text: "Você não poderá reverter essa ação!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#007bff',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            location.href = '/Aluno/Delete?id=' + id;
+        }
+    })
 }
 
 function apagarProfessor(id) {
-    if (confirm('Confirma a exclusão do registro?'))
-        location.href = '/Professor/Delete?id=' + id;
+    Swal.fire({
+        title: 'Confirma a exclusão do registro?',
+        text: "Você não poderá reverter essa ação!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#007bff',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            location.href = '/Professor/Delete?id=' + id;
+        }
+    })
 }
 
 function apagarMateria(id) {
-    if (confirm('Confirma a exclusão do registro?'))
-        location.href = '/Materia/Delete?id=' + id;
+    Swal.fire({
+        title: 'Confirma a exclusão do registro?',
+        text: "Você não poderá reverter essa ação!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#007bff',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            location.href = '/Materia/Delete?id=' + id;
+        }
+    })
 }
 
 function apagarAula(id) {
-    if (confirm('Confirma a exclusão do registro?'))
-        location.href = '/Aula/Delete?id=' + id;
+    Swal.fire({
+        title: 'Confirma a exclusão do registro?',
+        text: "Você não poderá reverter essa ação!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#007bff',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            location.href = '/Aula/Delete?id=' + id;
+        }
+    })
 }

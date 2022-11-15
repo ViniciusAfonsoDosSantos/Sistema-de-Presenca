@@ -69,7 +69,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                         ConexaoMQTT conectaHelix = new ConexaoMQTT();
                         conectaHelix.ProvisionaDadosMQTT(model);
                         conectaHelix.RegistraDadosMQTT(model);
-                        conectaHelix.PublishMQTT(model);
+                        conectaHelix.PublishCreateMQTT(model);
                         /*  Timer
                         Stopwatch cronometro = new Stopwatch();
                         cronometro.Start();
@@ -144,10 +144,11 @@ namespace TrabalhoInterdisciplinar.Controllers
             else
             {
                 Regex validaNumeroCPFRegex = new Regex("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$");
-                if (!validaNumeroCPFRegex.IsMatch(aluno.Cpf) || ValidaCPF(aluno.Cpf))
+                if (!validaNumeroCPFRegex.IsMatch(aluno.Cpf) || !ValidaCPF(aluno.Cpf))
                     ModelState.AddModelError("Cpf", "CPF Inválido.");
             }
         }
+
         private bool ValidaCPF(string cpf)
         {
             int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
@@ -160,9 +161,33 @@ namespace TrabalhoInterdisciplinar.Controllers
             cpf = cpf.Replace(".", "").Replace("-", "");
             if (cpf.Length != 11)
                 return false;
+
+            switch (cpf)
+            {
+                case "11111111111":
+                    return false;
+                case "00000000000":
+                    return false;
+                case "2222222222":
+                    return false;
+                case "33333333333":
+                    return false;
+                case "44444444444":
+                    return false;
+                case "55555555555":
+                    return false;
+                case "66666666666":
+                    return false;
+                case "77777777777":
+                    return false;
+                case "88888888888":
+                    return false;
+                case "99999999999":
+                    return false;
+            }
+
             tempCpf = cpf.Substring(0, 9);
             soma = 0;
-
             for (int i = 0; i < 9; i++)
                 soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
             resto = soma % 11;
