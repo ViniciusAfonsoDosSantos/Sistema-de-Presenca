@@ -1,32 +1,41 @@
-﻿@{
+﻿@using TrabalhoInterdisciplinar.Enumeradores
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container mt-5 pt-5">
     <fieldset id="areaFiltro" class="form-group fieldset-personalizado">
-        <legend>Presenças</legend>
+        <legend>Aulas</legend>
         <div class="row justify-content-between">
-            
+
             <div class="col-12">
+                <div class="col-2 d-inline-block">
+                    <label for="situacao" class="mt-1">Situação</label>
+                    <select Name="situacao" asp-items="Html.GetEnumSelectList<EnumSituacaoAula>()" class="form-control campo-personalizado" id="situacao-dropdown"> </select>
+                </div>
                 <div class="col-4 d-inline-block">
-                    <label for="aluno" class="mt-1">Aluno</label>
-                    <select Name="aluno" asp-items="ViewBag.Alunos" class="form-control campo-personalizado" id="aluno-dropdown"> </select>
+                    <label for="materia" class="mt-1">Matéria</label>
+                    <select Name="materia" asp-items="ViewBag.Materias" class="form-control campo-personalizado" id="materia-dropdown"> </select>
                 </div>
             </div>
-           
+
             <div class="col-9 mt-2">
                 <div class="col-3 d-inline-block">
-                    <label for="aula" class="mt-1">Aula</label>
-                    <select Name="aula" asp-items="ViewBag.Aulas" class="form-control campo-personalizado" id="aula-dropdown"> </select>
+                    <label for="data-inicial" class="mt-1">Data Inicial</label>
+                    <input type="date" Name="data-inicial" class="form-control campo-personalizado" id="data-inicial" />
+                </div>
+                <div class="col-3 d-inline-block">
+                    <label for="data-final" class="mt-1">Data Final</label>
+                    <input type="date" Name="data-final" class="form-control campo-personalizado" id="data-final" />
                 </div>
             </div>
 
             <div class="col-3 text-right">
                 <br />
                 <input type="button" id="btnFiltro" class="btn btn-success botao-personalizado mr-4 " value="Aplicar"
-                     onclick="aplicaFiltroConsultaAvancadaAula()" />
+                       onclick="aplicaFiltroConsultaAvancadaAula()" />
             </div>
-            
+
         </div>
     </fieldset>
 

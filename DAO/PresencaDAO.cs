@@ -27,7 +27,6 @@ namespace TrabalhoInterdisciplinar.DAO
             var lista = new List<string>(); //colocar só para DateTime
             foreach (DataRow dr in tabela.Rows)
             {
-                //lista.Add(MontaModel(dr[]
                 lista.Add(Convert.ToDateTime(dr["HorarioPresenca"]).ToString("dd/MM/yyyy HH:mm"));
             }
             return lista;
@@ -41,7 +40,10 @@ namespace TrabalhoInterdisciplinar.DAO
                 CodAluno = Convert.ToInt32(registro["codAluno"]),
                 CodAula = Convert.ToInt32(registro["codAula"]),
                 Presente = registro["presente"].ToString(),
-                DataHoraPresenca = Convert.ToDateTime(registro["HorarioPresenca"])
+                DataHoraPresenca = Convert.ToDateTime(registro["HorarioPresenca"]),
+                AlunoNome = registro["nome"].ToString(),
+                AulaDescricao = registro["Conteudo"].ToString(),
+                MateriaDescricao = registro["descricao"].ToString()
             };
             return p;
         }
@@ -49,6 +51,23 @@ namespace TrabalhoInterdisciplinar.DAO
         protected override void SetTabela()
         {
             Tabela = "Presenca";
+        }
+
+        internal object ConsultaAvancada(int idAluno, int idAula)
+        {
+            SqlParameter[] p =
+            {
+                new SqlParameter("idAluno", idAluno),
+                new SqlParameter("idAula", idAula)
+            };
+
+            var tabela = HelperDAO.ExecutaProcSelect("spConsultaPresencaParametrizada", p);
+            var lista = new List<PresencaViewModel>();
+            foreach (DataRow dr in tabela.Rows)
+            {
+                lista.Add(MontaModel(dr));
+            }
+            return lista;
         }
     }
 }

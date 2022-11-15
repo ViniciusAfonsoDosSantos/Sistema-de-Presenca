@@ -63,6 +63,25 @@ function aplicaFiltroConsultaAvancadaListagem() {
     });
 }
 
+
+/*AJAX Presencas*/
+function aplicaFiltroConsultaAvancadaPresencas() {
+    var vIdAluno = document.getElementById('aluno-dropdown').value;
+    var vIdAula = document.getElementById('aula-dropdown').value;
+    $.ajax({
+        url: "/ConsultaPresencas/ConsultaPresencaAvancada",
+        data: { idAluno: vIdAluno, idAula: vIdAula },
+        success: function (dados) {
+            if (dados.erro != undefined) {
+                alert(dados.msg);
+            }
+            else {
+                document.getElementById('resultadoConsulta').innerHTML = dados;
+            }
+        },
+    });
+}
+
 /*Abrir Modal Imagem*/
 $(document).on("click", ".openImageDialog", function () {
     console.log('Ok');
