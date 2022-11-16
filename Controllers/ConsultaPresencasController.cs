@@ -5,6 +5,7 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
+using TrabalhoInterdisciplinar.ConexãoHelix;
 using TrabalhoInterdisciplinar.DAO;
 using TrabalhoInterdisciplinar.Enumeradores;
 using TrabalhoInterdisciplinar.Models;
@@ -26,6 +27,13 @@ namespace TrabalhoInterdisciplinar.Controllers
                     ViewBag.LogadoAluno = true;
                 base.OnActionExecuting(context);
             }
+        }
+
+        public IActionResult LerPresenca()
+        {
+            ConexaoMQTT conectaHelix = new ConexaoMQTT();
+            conectaHelix.PublishReadMQTT();
+            return RedirectToAction("Index", "ConsultaPresencas");
         }
 
         //Verificar se existem novas presenças
