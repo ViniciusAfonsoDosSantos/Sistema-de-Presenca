@@ -34,7 +34,7 @@ namespace TrabalhoInterdisciplinar.Controllers
         public IActionResult Index()
         {
             //PresencaDAO dao = new PresencaDAO();
-            //PegaDadosMongoDB();
+            PegaDadosMongoDB();
             //var lista = dao.Listagem();
             PreparaDadosParaFiltros();
             return View("Index");
