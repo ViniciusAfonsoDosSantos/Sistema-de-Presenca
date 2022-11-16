@@ -27,7 +27,7 @@ namespace TrabalhoInterdisciplinar.ConexãoHelix
             @"        {""name"": ""read"",""type"": ""command""}" + "\n" +
             @"       ]," + "\n" +
             @"       ""attributes"": [" + "\n" +
-            @"        {""object_id"": ""alunoId"", ""name"": ""alunoid"", ""type"":""Text""}," + "\n" +
+            @"        {""object_id"": ""msg"", ""name"": ""msg"", ""type"":""Text""}," + "\n" +
             @"        {""object_id"": ""presenca"", ""name"": ""presenca"", ""type"":""Text""}" + "\n" +
             @"       ]" + "\n" +
             @"    }" + "\n" +
@@ -88,7 +88,7 @@ namespace TrabalhoInterdisciplinar.ConexãoHelix
 
         public void PublishReadMQTT()
         {
-            var client = new RestClient("http://191.233.28.24:1026/v2/entities/urn:ngsi-ld:aluno:003/attrs");
+            var client = new RestClient("http://191.233.28.24:1026/v2/entities/urn:ngsi-ld:aluno:004/attrs");
             var request = new RestRequest();
             request.Method = Method.Patch;
             request.Timeout = 10000;
@@ -106,6 +106,7 @@ namespace TrabalhoInterdisciplinar.ConexãoHelix
             Console.WriteLine(response.Content);
         }
 
+        /*
         public string RecebeMQTT()
         {
             //Método para receber qual foi a mensagem -> Erro ou Sucesso
@@ -120,5 +121,6 @@ namespace TrabalhoInterdisciplinar.ConexãoHelix
             string mensagem = response.Content.ToString();
             return mensagem;
         }
+        */
     }
 }
