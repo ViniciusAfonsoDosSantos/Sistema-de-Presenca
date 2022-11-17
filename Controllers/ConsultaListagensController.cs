@@ -33,6 +33,19 @@ namespace TrabalhoInterdisciplinar.Controllers
         {
             try
             {
+                AlunoDAO alunodao = new AlunoDAO();
+                MateriaDAO materiadao = new MateriaDAO();
+                ProfessorDAO professordao = new ProfessorDAO();
+                AulaDAO auladao = new AulaDAO();
+
+                ViewBag.Aluno = alunodao.Listagem().Count;
+                ViewBag.Professor = professordao.Listagem().Count;
+                ViewBag.Materia = materiadao.Listagem().Count;
+                ViewBag.Aula = auladao.Listagem().Count;
+
+
+
+
                 return View("Index");
             }
             catch (Exception erro)

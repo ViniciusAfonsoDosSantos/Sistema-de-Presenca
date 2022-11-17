@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using TrabalhoInterdisciplinar.DAO;
@@ -35,6 +36,26 @@ namespace TrabalhoInterdisciplinar.Controllers
             try
             {
                 PreparaDadosParaFiltros();
+                //Listagem -> retorna uma lista
+                //Pegar a lista do listagem e fazer um foreach
+                AulaDAO aulaDAO = new AulaDAO();
+                foreach (var item in aulaDAO.Listagem())
+                {
+                    if (DateTime.Now < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
+                    {
+                        item.Situacao = EnumSituacaoAula.Ativo;
+                    }
+                    else if (DateTime.Now > item.DataHoraAula.AddMinutes(15))
+                    {
+                        item.Situacao = EnumSituacaoAula.Finalizada;
+                    }
+                    else if (DateTime.Now < item.DataHoraAula.AddMinutes(-15))
+                    {
+                        item.Situacao = EnumSituacaoAula.Futura;
+                    }
+                }
+
+                if
                 return View("Index");
             }
             catch (Exception erro)
