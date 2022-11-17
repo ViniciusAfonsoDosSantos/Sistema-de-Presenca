@@ -17,8 +17,8 @@ namespace TrabalhoInterdisciplinar.DAO
         protected string Tabela { get; set; }
         protected string NomeSpListagem { get; set; } = "spListagem";
         protected abstract SqlParameter[] CriaParametros(T model);
-        protected abstract T MontaModel(DataRow registro);
-        
+        protected abstract T MontaModel(DataRow registro, bool comJoin);
+
         public virtual void Insert(T model)
         {
             HelperDAO.ExecutaProc("spInsert_" + Tabela, CriaParametros(model));
@@ -50,7 +50,7 @@ namespace TrabalhoInterdisciplinar.DAO
             if (tabela.Rows.Count == 0)
                 return null;
             else
-                return MontaModel(tabela.Rows[0]);
+                return MontaModel(tabela.Rows[0], false);
         }
 
         public virtual int ProximoId()
@@ -73,12 +73,12 @@ namespace TrabalhoInterdisciplinar.DAO
             var tabela = HelperDAO.ExecutaProcSelect(NomeSpListagem, p);
             List<T> lista = new List<T>();
             foreach (DataRow registro in tabela.Rows)
-                lista.Add(MontaModel(registro));
+                lista.Add(MontaModel(registro,false));
             return lista;
         }
 
-        /*
-        public List<T> ConsultaAvancada(int id)
+        
+        public virtual List<T> ConsultaAvancada(int id)
         {
             SqlParameter[] p =
             {
@@ -86,14 +86,14 @@ namespace TrabalhoInterdisciplinar.DAO
                 new SqlParameter("tabela", Tabela)
             };
 
-            var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaMateria", p);
+            var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaGenerica", p);
             var lista = new List<T>();
             foreach (DataRow dr in tabela.Rows)
             {
-                lista.Add(MontaModel(dr));
+                lista.Add(MontaModel(dr, false));
             }
             return lista;
         }
-        */
+        
     }
 }

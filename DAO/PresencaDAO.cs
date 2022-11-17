@@ -32,7 +32,7 @@ namespace TrabalhoInterdisciplinar.DAO
             return lista;
         }
 
-        protected override PresencaViewModel MontaModel(DataRow registro)
+        protected override PresencaViewModel MontaModel(DataRow registro, bool comJoin = false)
         {
             PresencaViewModel p = new PresencaViewModel()
             {
@@ -53,7 +53,7 @@ namespace TrabalhoInterdisciplinar.DAO
             Tabela = "Presenca";
         }
 
-        internal object ConsultaAvancada(int idAluno, int idAula)
+        public List<PresencaViewModel> ConsultaAvancada(int idAluno, int idAula)
         {
             SqlParameter[] p =
             {
