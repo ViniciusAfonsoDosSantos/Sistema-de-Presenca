@@ -27,7 +27,7 @@ namespace TrabalhoInterdisciplinar.DAO
             return parametros;
         }
 
-        protected override AlunoViewModel MontaModel(DataRow registro)
+        protected override AlunoViewModel MontaModel(DataRow registro, bool comJoin = false)
         {
             AlunoViewModel a = new AlunoViewModel()
             {
@@ -71,20 +71,20 @@ namespace TrabalhoInterdisciplinar.DAO
             return Convert.ToInt32(tabela.Rows[0][0].ToString());
         }
 
-        public List<AlunoViewModel> ConsultaAvancada(int id)
-        {
-            SqlParameter[] p =
-            {
-                new SqlParameter("ID", id)
-            };
+        //public List<AlunoViewModel> ConsultaAvancada(int id)
+        //{
+        //    SqlParameter[] p =
+        //    {
+        //        new SqlParameter("ID", id)
+        //    };
 
-            var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaAluno", p);
-            var lista = new List<AlunoViewModel>();
-            foreach (DataRow dr in tabela.Rows)
-            {
-                lista.Add(MontaModel(dr));
-            }
-            return lista;
-        }
+        //    var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaAluno", p);
+        //    var lista = new List<AlunoViewModel>();
+        //    foreach (DataRow dr in tabela.Rows)
+        //    {
+        //        lista.Add(MontaModel(dr));
+        //    }
+        //    return lista;
+        //}
     }
 }

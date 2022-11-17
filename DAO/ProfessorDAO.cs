@@ -19,7 +19,7 @@ namespace TrabalhoInterdisciplinar.DAO
             return parametros;
         }
 
-        protected override ProfessorViewModel MontaModel(DataRow registro)
+        protected override ProfessorViewModel MontaModel(DataRow registro, bool comJoin = false)
         {
             ProfessorViewModel a = new ProfessorViewModel()
             {
@@ -53,20 +53,20 @@ namespace TrabalhoInterdisciplinar.DAO
 
         }
 
-        public List<ProfessorViewModel> ConsultaAvancada(int id)
-        {
-            SqlParameter[] p =
-            {
-                new SqlParameter("ID", id)
-            };
+        //public List<ProfessorViewModel> ConsultaAvancada(int id)
+        //{
+        //    SqlParameter[] p =
+        //    {
+        //        new SqlParameter("ID", id)
+        //    };
 
-            var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaProfessor", p);
-            var lista = new List<ProfessorViewModel>();
-            foreach (DataRow dr in tabela.Rows)
-            {
-                lista.Add(MontaModel(dr));
-            }
-            return lista;
-        }
+        //    var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaProfessor", p);
+        //    var lista = new List<ProfessorViewModel>();
+        //    foreach (DataRow dr in tabela.Rows)
+        //    {
+        //        lista.Add(MontaModel(dr));
+        //    }
+        //    return lista;
+        //}
     }
 }

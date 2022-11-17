@@ -5,5 +5,6 @@
         public string Descricao { get; set; }
         public double CargaHoraria { get; set; }
         public int CodProfessor { get; set; }
+        public string Professor { get; set; }
     }
 }

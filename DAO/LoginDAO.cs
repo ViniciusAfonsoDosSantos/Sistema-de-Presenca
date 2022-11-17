@@ -15,7 +15,7 @@ namespace TrabalhoInterdisciplinar.DAO
             return parametros;
         }
 
-        protected override LoginViewModel MontaModel(DataRow registro)
+        protected override LoginViewModel MontaModel(DataRow registro, bool comJoin = false)
         {
             LoginViewModel a = new LoginViewModel()
             {

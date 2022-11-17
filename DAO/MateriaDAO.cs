@@ -18,7 +18,7 @@ namespace TrabalhoInterdisciplinar.DAO
             return parametros;
         }
 
-        protected override MateriaViewModel MontaModel(DataRow registro)
+        protected override MateriaViewModel MontaModel(DataRow registro, bool comJoin=false)
         {
             MateriaViewModel a = new MateriaViewModel()
             {
@@ -27,6 +27,8 @@ namespace TrabalhoInterdisciplinar.DAO
                 CargaHoraria = Convert.ToDouble(registro["cargahoraria"]),
                 CodProfessor = Convert.ToInt32(registro["codprofessor"])
             };
+            if (comJoin)
+                a.Professor = registro["nome"].ToString();
             return a;
         }
 
@@ -35,10 +37,10 @@ namespace TrabalhoInterdisciplinar.DAO
             Tabela = "Materia";
         }
 
-        public List<MateriaViewModel> ConsultaAvancada(int id)
+        public override List<MateriaViewModel> ConsultaAvancada(int id)
         {
             SqlParameter[] p =
-            {
+            {   
                 new SqlParameter("ID", id)
             };
 
@@ -46,7 +48,7 @@ namespace TrabalhoInterdisciplinar.DAO
             var lista = new List<MateriaViewModel>();
             foreach (DataRow dr in tabela.Rows)
             {
-                lista.Add(MontaModel(dr));
+                lista.Add(MontaModel(dr, true));
             }
             return lista;
         }

@@ -18,7 +18,7 @@ namespace TrabalhoInterdisciplinar.DAO
             return parametros;
         }
 
-        protected override AulaViewModel MontaModel(DataRow registro)
+        protected override AulaViewModel MontaModel(DataRow registro, bool comJoin=false)
         {
             AulaViewModel a = new AulaViewModel()
             {
@@ -27,6 +27,8 @@ namespace TrabalhoInterdisciplinar.DAO
                 DataHoraAula = Convert.ToDateTime(registro["datahoraaula"]),
                 CodMateria = Convert.ToInt32(registro["codmateria"])
             };
+            if (comJoin)
+                a.Materia = registro["descricao"].ToString();
             return a;
         }
 
@@ -35,19 +37,12 @@ namespace TrabalhoInterdisciplinar.DAO
             Tabela = "Aula";
         }
 
-        public List<AulaViewModel> ConsultaAvancada(int id)
+        public List<AulaViewModel> ListagemAulas()
         {
-            SqlParameter[] p =
-            {
-                new SqlParameter("ID", id)
-            };
-
-            var tabela = HelperDAO.ExecutaProcSelect("spConsultaAvancadaAula", p);
-            var lista = new List<AulaViewModel>();
-            foreach (DataRow dr in tabela.Rows)
-            {
-                lista.Add(MontaModel(dr));
-            }
+            var tabela = HelperDAO.ExecutaProcSelect("spListagemAulas", null);
+            List<AulaViewModel> lista = new List<AulaViewModel>();
+            foreach (DataRow registro in tabela.Rows)
+                lista.Add(MontaModel(registro));
             return lista;
         }
 
