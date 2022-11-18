@@ -38,6 +38,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                 PreparaDadosParaFiltros();
                 //Listagem -> retorna uma lista
                 //Pegar a lista do listagem e fazer um foreach
+                /*
                 AulaDAO aulaDAO = new AulaDAO();
                 foreach (var item in aulaDAO.Listagem())
                 {
@@ -55,7 +56,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                     }
                 }
 
-                if
+                */
                 return View("Index");
             }
             catch (Exception erro)
