@@ -39,23 +39,29 @@ namespace TrabalhoInterdisciplinar.Controllers
                 //Listagem -> retorna uma lista
                 //Pegar a lista do listagem e fazer um foreach
                 AulaDAO aulaDAO = new AulaDAO();
+                double ativo = 0;
+                double finalizado = 0;
+                double futura = 0;
+
                 foreach (var item in aulaDAO.Listagem())
                 {
                     if (DateTime.Now < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
                     {
-                        item.Situacao = EnumSituacaoAula.Ativo;
+                       ativo++;
                     }
                     else if (DateTime.Now > item.DataHoraAula.AddMinutes(15))
                     {
-                        item.Situacao = EnumSituacaoAula.Finalizada;
+                        finalizado++;
                     }
                     else if (DateTime.Now < item.DataHoraAula.AddMinutes(-15))
                     {
-                        item.Situacao = EnumSituacaoAula.Futura;
+                        futura++;
                     }
                 }
+                ViewBag.Ativo = (ativo/aulaDAO.Listagem().Count) * 100;
+                ViewBag.Finalizado = Convert.ToDouble((finalizado / aulaDAO.Listagem().Count) * 100);
+                ViewBag.Futura = (futura / aulaDAO.Listagem().Count) * 100;
 
-                if
                 return View("Index");
             }
             catch (Exception erro)
