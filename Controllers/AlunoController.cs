@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TrabalhoInterdisciplinar.ConexãoHelix;
 using TrabalhoInterdisciplinar.DAO;
+using TrabalhoInterdisciplinar.Helpers;
 using TrabalhoInterdisciplinar.Models;
 
 namespace TrabalhoInterdisciplinar.Controllers
@@ -61,7 +62,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                         LoginViewModel modelLogin = new LoginViewModel()
                         {
                             ID = model.ID,
-                            SenhaHash = Helpers.PasswordHasher.HashPassword("VaiCurintia")
+                            SenhaHash = PasswordHasher.Encrypt("0001")
                         };
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);
@@ -223,69 +224,5 @@ namespace TrabalhoInterdisciplinar.Controllers
                 return View("Error", new ErrorViewModel(erro.ToString()));
             }
         }
-        //public async override Task<IActionResult> SalvaAssincrono(AlunoViewModel model, string Operacao)
-        //{
-        //  try
-        //  {
-        //      ValidaDados(model, Operacao);
-        //      if (ModelState.IsValid == false)
-        //      {
-        //          ViewBag.Operacao = Operacao;
-        //          PreencheDadosParaView(Operacao, model);
-        //          return View(NomeViewForm, model);
-        //      }
-        //      else
-        //      {
-        //          if (Operacao == "I")
-        //          {
-        //              DAO.Insert(model);
-        //              LoginViewModel modelLogin = new LoginViewModel()
-        //              {
-        //                  ID = model.ID,
-        //                  SenhaHash = Helpers.PasswordHasher.HashPassword("VaiCurintia")
-        //              };
-        //              LoginDAO login = new LoginDAO();
-        //              login.Insert(modelLogin);
-        //              await TesteMongoDB();
-        //          }
-        //          else
-        //              DAO.Update(model);
-        //          TempData["AlertMessage"] = "Dado salvo com sucesso...! ";
-        //          return RedirectToAction("Create");
-        //      }
-        //  }
-        //  catch (Exception erro)
-        //  {
-        //      return View("Error", new ErrorViewModel(erro.ToString()));
-        //  }
-
-        //}
-
-        //private async Task TesteMongoDB()
-        //{            
-        //    var url = "<your url>";
-
-        //    var request = WebRequest.Create(url);
-        //    request.Method = "POST";
-        //    request.ContentType = "application/json";
-        //    request.Headers.Add("fiware-service", "helixiot");
-        //    request.Headers.Add("fiware-servicepath", "/");
-
-        //    var json = JsonConvert.SerializeObject(new { id = "007", type = "vasco" });
-        //    byte[] byteArray = Encoding.UTF8.GetBytes(json);
-        //    using var reqStream = request.GetRequestStream();
-        //    reqStream.Write(byteArray, 0, byteArray.Length);
-
-        //    using var response = request.GetResponse();
-        //    Console.WriteLine(((HttpWebResponse)response).StatusDescription);
-
-        //    using var respStream = response.GetResponseStream();
-
-        //    using var reader = new StreamReader(respStream);
-        //    string data = reader.ReadToEnd();
-        //    Console.WriteLine(data);
-        //}
-
-
     }
 }
