@@ -163,3 +163,14 @@ input[type="file"]::file-selector-button {
         text-decoration: none;
         color: #555;
     }
+
+
+.container {
+    height:auto;
+}
+
+.chart-wrapper {
+    width:500px;
+    height:500px;
+    margin: 0 auto;
+}
