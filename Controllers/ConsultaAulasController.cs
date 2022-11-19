@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using TrabalhoInterdisciplinar.DAO;
@@ -35,6 +36,39 @@ namespace TrabalhoInterdisciplinar.Controllers
             try
             {
                 PreparaDadosParaFiltros();
+                //Listagem -> retorna uma lista
+                //Pegar a lista do listagem e fazer um foreach
+                AulaDAO aulaDAO = new AulaDAO();
+                double ativo = 0;
+                double finalizado = 0;
+                double futura = 0;
+
+                foreach (var item in aulaDAO.Listagem())
+                {
+                    if (DateTime.Now < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
+                    {
+                       ativo++;
+                    }
+                    else if (DateTime.Now > item.DataHoraAula.AddMinutes(15))
+                    {
+                        finalizado++;
+                    }
+                    else if (DateTime.Now < item.DataHoraAula.AddMinutes(-15))
+                    {
+                        futura++;
+                    }
+                }
+
+                if (ativo != 0)
+                {
+                    ViewBag.Ativo = Convert.ToInt16((ativo / aulaDAO.Listagem().Count) * 100);
+                }
+                else {
+                    ViewBag.Ativo = 0;
+                }
+                ViewBag.Finalizado = Convert.ToInt16((finalizado / aulaDAO.Listagem().Count) * 100);
+                ViewBag.Futura = Convert.ToInt16((futura / aulaDAO.Listagem().Count) * 100);
+
                 return View("Index");
             }
             catch (Exception erro)

@@ -69,5 +69,30 @@ namespace TrabalhoInterdisciplinar.DAO
             }
             return lista;
         }
+
+        public List<int> PegaQuantidadePresenteEQuantidadeDeMaterias(int idMateria)
+        {
+            SqlParameter[] p =
+            {
+                new SqlParameter("id", idMateria)
+            };
+
+            var qntdPresente = HelperDAO.ExecutaProcSelect("spPegaQuantidadePresente", p);
+            var spPegaQuantidadedeAulasMaterias = HelperDAO.ExecutaProcSelect("spPegaQuantidadePresente", p);
+
+            var lista = new List<int>();
+
+            foreach (DataRow dr in qntdPresente.Rows)
+            {
+                lista.Add(Convert.ToInt32(dr));
+            }
+
+            foreach (DataRow dr in spPegaQuantidadedeAulasMaterias.Rows)
+            {
+                lista.Add(Convert.ToInt32(dr));
+            }
+
+            return lista;
+        }
     }
 }

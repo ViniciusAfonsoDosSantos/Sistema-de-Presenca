@@ -41,6 +41,19 @@ namespace TrabalhoInterdisciplinar.Controllers
         //e colocar )
         public IActionResult Index()
         {
+            AlunoDAO alunodao = new AlunoDAO();
+            MateriaDAO materiadao = new MateriaDAO();
+            PresencaDAO presencadao = new PresencaDAO();
+            int qntdAlunos = alunodao.Listagem().Count;
+            ViewBag.QntdAlunos = qntdAlunos;
+            ViewBag.QntdDePresenca = new List<object>();
+
+            foreach (var item in materiadao.Listagem()) {
+                List<int> quantidadespresenca = presencadao.PegaQuantidadePresenteEQuantidadeDeMaterias(item.ID);
+                int valor = Convert.ToInt32((qntdAlunos * quantidadespresenca[1]) / quantidadespresenca[0]);
+                ViewBag.QntdDePresenca.Add(new {valor, item.ID}); 
+            }
+
             //PresencaDAO dao = new PresencaDAO();
             PegaDadosMongoDB();
             //var lista = dao.Listagem();
