@@ -41,17 +41,20 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         private void PreparaListaProfessoresParaCombo()
         {
-            MateriaDAO materiaDao = new MateriaDAO();
-            var materias = materiaDao.Listagem();
-            List<SelectListItem> listaMaterias = new List<SelectListItem>();
+            
+                MateriaDAO materiaDao = new MateriaDAO();
+                var materias = materiaDao.Listagem();
+                List<SelectListItem> listaMaterias = new List<SelectListItem>();
 
-            listaMaterias.Add(new SelectListItem("Selecione uma Matéria...", "0"));
-            foreach (var materia in materias)
-            {
-                SelectListItem item = new SelectListItem(materia.Descricao, materia.ID.ToString());
-                listaMaterias.Add(item);
-            }
-            ViewBag.Materias = listaMaterias;
+                listaMaterias.Add(new SelectListItem("Selecione uma Matéria...", "0"));
+                foreach (var materia in materias)
+                {
+                    SelectListItem item = new SelectListItem(materia.Descricao, materia.ID.ToString());
+                    listaMaterias.Add(item);
+                }
+                ViewBag.Materias = listaMaterias;
+            
+            
         }
         
     }

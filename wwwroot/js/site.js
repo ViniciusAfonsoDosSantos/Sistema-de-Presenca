@@ -24,6 +24,11 @@ function exibirImagem() {
     };
 }
 
+/*Pagination table*/
+$(document).ready(function () {
+    $('#table-presenca').DataTable();
+});
+
 /*AJAX Aula*/
 function aplicaFiltroConsultaAvancadaAula() {
     var vIdMateria = document.getElementById('materia-dropdown').value;
