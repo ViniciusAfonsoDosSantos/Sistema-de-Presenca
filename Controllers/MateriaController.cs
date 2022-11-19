@@ -35,6 +35,7 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         private void PreparaListaProfessoresParaCombo()
         {
+
             ProfessorDAO professorDao = new ProfessorDAO();
             var professores = professorDao.Listagem();
             List<SelectListItem> listaProfessores = new List<SelectListItem>();

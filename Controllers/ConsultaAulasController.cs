@@ -151,16 +151,23 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         private void PreparaDadosParaFiltros()
         {
-            MateriaDAO materiaDAO = new MateriaDAO();
-            var materias = materiaDAO.Listagem();
-            List<SelectListItem> listaMaterias = new List<SelectListItem>();
-            listaMaterias.Add(new SelectListItem("Selecione uma matéria...", "0"));
-            foreach (var materia in materias)
+            try
             {
-                SelectListItem item = new SelectListItem(materia.Descricao, materia.ID.ToString());
-                listaMaterias.Add(item);
+                MateriaDAO materiaDAO = new MateriaDAO();
+                var materias = materiaDAO.Listagem();
+                List<SelectListItem> listaMaterias = new List<SelectListItem>();
+                listaMaterias.Add(new SelectListItem("Selecione uma matéria...", "0"));
+                foreach (var materia in materias)
+                {
+                    SelectListItem item = new SelectListItem(materia.Descricao, materia.ID.ToString());
+                    listaMaterias.Add(item);
+                }
+                ViewBag.Materias = listaMaterias;
             }
-            ViewBag.Materias = listaMaterias;
+            catch(Exception err)
+            {
+                throw new Exception("Problemas ao listar o filtro... " + err.Message);
+            }
         }
     }
 }

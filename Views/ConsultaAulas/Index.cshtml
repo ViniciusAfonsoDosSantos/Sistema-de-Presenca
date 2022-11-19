@@ -39,12 +39,8 @@
 </div>
 
 
-<div class="wrapper">
-    <div class="container">
-        <div class="chart-wrapper">
-            <canvas id="myChart"></canvas>
-        </div>
-    </div>
+<div class="container mt-5">
+    <canvas id="myChart"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -52,8 +48,6 @@
 
 <script>
     const ctx = document.getElementById('myChart');
-
-
     new Chart(ctx, {
         type: 'pie',
         data: {

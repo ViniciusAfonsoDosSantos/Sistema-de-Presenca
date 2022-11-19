@@ -174,3 +174,13 @@ input[type="file"]::file-selector-button {
     height:500px;
     margin: 0 auto;
 }
+
+.chart-wrapper-presenca {
+    width: 800px;
+    height: 400px;
+    margin: 0 auto;
+}
+.table-container {
+    height: 70vh;
+    overflow: auto;
+}

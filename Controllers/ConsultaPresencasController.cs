@@ -31,9 +31,17 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         public IActionResult LerPresenca()
         {
-            ConexaoMQTT conectaHelix = new ConexaoMQTT();
-            conectaHelix.PublishReadMQTT();
-            return RedirectToAction("Index", "ConsultaPresencas");
+            try
+            {
+                ConexaoMQTT conectaHelix = new ConexaoMQTT();
+                conectaHelix.PublishReadMQTT();
+                return RedirectToAction("Index", "ConsultaPresencas");
+            }
+            catch(Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
+            
         }
 
         //Verificar se existem novas presenças
@@ -41,122 +49,91 @@ namespace TrabalhoInterdisciplinar.Controllers
         //e colocar )
         public IActionResult Index()
         {
-            AlunoDAO alunodao = new AlunoDAO();
-            MateriaDAO materiadao = new MateriaDAO();
-            PresencaDAO presencadao = new PresencaDAO();
-            int qntdAlunos = alunodao.Listagem().Count;
-            ViewBag.QntdAlunos = qntdAlunos;
-            ViewBag.QntdDePresenca = new List<object>();
-
-            foreach (var item in materiadao.Listagem()) {
-                List<int> quantidadespresenca = presencadao.PegaQuantidadePresenteEQuantidadeDeMaterias(item.ID);
-                int valor = Convert.ToInt32((qntdAlunos * quantidadespresenca[1]) / quantidadespresenca[0]);
-                ViewBag.QntdDePresenca.Add(new {valor, item.ID}); 
-            }
-
-            //PresencaDAO dao = new PresencaDAO();
-            PegaDadosMongoDB();
-            //var lista = dao.Listagem();
-            PreparaDadosParaFiltros();
-            return View("Index");
-        }
-        public void PegaDadosMongoDB()
-        {
-            string conn = "mongodb://helix:H3l1xNG@191.233.28.24:27000/?authMechanism=SCRAM-SHA-1";
-            var client = new MongoClient(conn);
-            var db = client.GetDatabase("sth_helixiot");
-            var entity = db.GetCollection<ComandosModel>("sth_/_urn:ngsi-ld:aluno:043_Aluno");
-
-            //na entidade do aluno, pegar os documentos dos comandos de presença
-            //pegar as novas presencas do aluno, ordenar pelas mais recentes
-            PresencaDAO dao = new PresencaDAO();
-            List<string> listaDatasPresencas = dao.NovasPresencas(31);
-            var docs = entity.Find(x => x.attrName == "presenca").ToList();
-            docs.Reverse();
-            foreach (var doc in docs)
+            try
             {
-                if (listaDatasPresencas.Contains(doc.recvTime.ToString("dd/MM/yyyy HH:mm")))
+                AlunoDAO alunodao = new AlunoDAO();
+                MateriaDAO materiadao = new MateriaDAO();
+                PresencaDAO presencadao = new PresencaDAO();
+                int qntdAlunos = alunodao.Listagem().Count;
+                ViewBag.QntdDePresenca = new List<object>();
+
+                foreach (var item in materiadao.Listagem())
                 {
-                    return;
+                    List<int> quantidadespresenca = presencadao.PegaQuantidadePresenteEQuantidadeDeMaterias(item.ID);
+                    int valor = Convert.ToInt32((qntdAlunos * quantidadespresenca[1]) / quantidadespresenca[0]);
+                    ViewBag.QntdDePresenca.Add(new { valor, item.Descricao });
                 }
-                ColocarPresencaSQL(doc);
+                presencadao.PegaDadosMongoDB();
+                PreparaDadosParaFiltros();
+                return View("Index");
             }
-        }
-
-        private void ColocarPresencaSQL(ComandosModel doc)
-        {
-            AulaViewModel aula = ObterAulaDia(doc.recvTime);
-            if (aula != null)
+            catch(Exception erro)
             {
-                //Achar aluno pelo IdBiometria
-                int idAluno = 31;
-                AtribuiPresencaAluno(idAluno, aula.ID, doc.attrValue, doc.recvTime);
+                return View("Error", new ErrorViewModel(erro.ToString()));
             }
+            
         }
-
-        private void AtribuiPresencaAluno(int idAluno, int codAula, string situacao, DateTime horarioPresenca)
+        
+        private void PreparaDadosParaFiltros()
         {
-            //verificar ultimas presencas desse aluno;
-            //try
-            //{
-                PresencaDAO presenca = new PresencaDAO();
-                presenca.Insert(new PresencaViewModel { CodAluno = idAluno, CodAula = codAula, Presente = situacao, DataHoraPresenca = horarioPresenca });
-            //}
-            //catch (Exception)
-            //{
+            try
+            {
+                AulaDAO aulaDAO = new AulaDAO();
+                var aulas = aulaDAO.Listagem();
 
-            //}
-            //exception aqui, preciso fazer todo o caminho dos métodos para retornar à página de erro
-        }
+                AlunoDAO alunoDAO = new AlunoDAO();
+                var alunos = alunoDAO.Listagem();
 
-        private AulaViewModel ObterAulaDia(DateTime recvTime)
-        {
-            AulaDAO aula = new AulaDAO();
-            return aula.ConsultaPorData(recvTime);
+                List<SelectListItem> listaAulas = new List<SelectListItem>();
+                listaAulas.Add(new SelectListItem("Selecione uma aula...", "0"));
+                foreach (var aula in aulas)
+                {
+                    MateriaDAO materiaDAO = new MateriaDAO();
+                    if (aula.DataHoraAula < DateTime.Now)
+                    {
+                        SelectListItem item = new SelectListItem($"{aula.Conteudo} - {materiaDAO.Consulta(aula.CodMateria).Descricao}", aula.ID.ToString());
+                        listaAulas.Add(item);
+                    }
+                }
+
+                List<SelectListItem> listaAlunos = new List<SelectListItem>();
+                listaAlunos.Add(new SelectListItem("Selecione um aluno...", "0"));
+                foreach (var aluno in alunos)
+                {
+                    SelectListItem item = new SelectListItem(aluno.Nome, aluno.ID.ToString());
+                    listaAlunos.Add(item);
+                }
+                ViewBag.Alunos = listaAlunos;
+                ViewBag.Aulas = listaAulas;
+            }
+            catch(Exception err)
+            {
+                throw new Exception("Problemas ao listar os dados do filtro... " + err.Message);
+            }
+            
         }
 
         public IActionResult ConsultaPresencaAvancada(int idAluno, int idAula)
         {
-            PresencaDAO presencaDAO = new PresencaDAO();
-            
-            if (string.IsNullOrEmpty(idAluno.ToString()))
+            try
             {
-                idAluno = 0;
+                PresencaDAO presencaDAO = new PresencaDAO();
+
+                if (string.IsNullOrEmpty(idAluno.ToString()))
+                {
+                    idAluno = 0;
+                }
+                if (string.IsNullOrEmpty(idAula.ToString()))
+                {
+                    idAula = 0;
+                }
+                var lista = presencaDAO.ConsultaAvancada(idAluno, idAula);
+                return PartialView("pvGridPresenca", lista);
             }
-            if (string.IsNullOrEmpty(idAula.ToString()))
+            catch(Exception err)
             {
-                idAula = 0;
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
-            var lista = presencaDAO.ConsultaAvancada(idAluno, idAula);
-            return PartialView("pvGridPresenca", lista);
-
-        }
-        private void PreparaDadosParaFiltros()
-        {
-            AulaDAO aulaDAO = new AulaDAO();
-            var aulas = aulaDAO.Listagem();
-
-            AlunoDAO alunoDAO = new AlunoDAO();
-            var alunos = alunoDAO.Listagem();
-
-            List<SelectListItem> listaAulas = new List<SelectListItem>();
-            listaAulas.Add(new SelectListItem("Selecione uma aula...", "0"));
-            foreach (var aula in aulas)
-            {
-                MateriaDAO materiaDAO = new MateriaDAO();
-                SelectListItem item = new SelectListItem($"{aula.Conteudo} - {materiaDAO.Consulta(aula.CodMateria).Descricao}", aula.ID.ToString());
-                listaAulas.Add(item);
-            }
-
-            List<SelectListItem> listaAlunos = new List<SelectListItem>();
-            listaAlunos.Add(new SelectListItem("Selecione um aluno...", "0"));
-            foreach (var aluno in alunos)
-            {
-                SelectListItem item = new SelectListItem(aluno.Nome, aluno.ID.ToString());
-                listaAlunos.Add(item);
-            }
-            ViewBag.Alunos = listaAlunos;
-            ViewBag.Aulas = listaAulas;
         }
     }
 }

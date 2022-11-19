@@ -33,11 +33,19 @@ namespace TrabalhoInterdisciplinar.Controllers
 
         public IActionResult Index()
         {
-            if (HelperControllers.VerificaProfessorLogado(HttpContext.Session))
-                ViewBag.LogadoProfessor = true;
-            else if (HelperControllers.VerificaAlunoLogado(HttpContext.Session))
-                ViewBag.LogadoAluno = true;
-            return View();
+            try
+            {
+
+                if (HelperControllers.VerificaProfessorLogado(HttpContext.Session))
+                    ViewBag.LogadoProfessor = true;
+                else if (HelperControllers.VerificaAlunoLogado(HttpContext.Session))
+                    ViewBag.LogadoAluno = true;
+                return View();
+            }
+            catch(Exception err)
+            {
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
         }
 
 

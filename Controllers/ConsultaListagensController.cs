@@ -82,37 +82,50 @@ namespace TrabalhoInterdisciplinar.Controllers
         //Fazer herança aqui em baixo
         private IActionResult ConsultaAvancadaMateria(int codigo)
         {
-            MateriaDAO dao = new MateriaDAO();
-            if (string.IsNullOrEmpty(codigo.ToString()))
-                codigo = 0;
-            var lista = dao.ConsultaAvancada(codigo);
+            try
+            {
+                MateriaDAO dao = new MateriaDAO();
+                if (string.IsNullOrEmpty(codigo.ToString()))
+                    codigo = 0;
+                var lista = dao.ConsultaAvancada(codigo);
 
-            if (lista.Count != 0)
-            {
-                return PartialView("pvGridMateria", lista);
+                if (lista.Count != 0)
+                {
+                    return PartialView("pvGridMateria", lista);
+                }
+                else
+                {
+                    return PartialView("pvGridSemResultado");
+                }
             }
-            else
+            catch (Exception err)
             {
-                return PartialView("pvGridSemResultado");
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
         }
 
         private IActionResult ConsultaAvancadaProfessor(int codigo)
         {
-            ProfessorDAO dao = new ProfessorDAO();
-            if (string.IsNullOrEmpty(codigo.ToString()))
-                codigo = 0;
-            var lista = dao.ConsultaAvancada(codigo);
+            try
+            {
+                ProfessorDAO dao = new ProfessorDAO();
+                if (string.IsNullOrEmpty(codigo.ToString()))
+                    codigo = 0;
+                var lista = dao.ConsultaAvancada(codigo);
 
-            if (lista.Count != 0)
-            {
-                return PartialView("pvGridProfessor", lista);
+                if (lista.Count != 0)
+                {
+                    return PartialView("pvGridProfessor", lista);
+                }
+                else
+                {
+                    return PartialView("pvGridSemResultado");
+                }
             }
-            else
+            catch(Exception err)
             {
-                return PartialView("pvGridSemResultado");
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
-            
         }
 
         public IActionResult ConsultaAvancadaAluno(int codigo)
