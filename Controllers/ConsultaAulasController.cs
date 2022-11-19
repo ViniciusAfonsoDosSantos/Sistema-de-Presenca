@@ -38,7 +38,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                 PreparaDadosParaFiltros();
                 //Listagem -> retorna uma lista
                 //Pegar a lista do listagem e fazer um foreach
-                /*
+                
                 AulaDAO aulaDAO = new AulaDAO();
                 double ativo = 0;
                 double finalizado = 0;
