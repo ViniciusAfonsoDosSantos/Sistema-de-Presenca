@@ -58,9 +58,16 @@ namespace TrabalhoInterdisciplinar.Controllers
                         futura++;
                     }
                 }
-                ViewBag.Ativo = (ativo/aulaDAO.Listagem().Count) * 100;
-                ViewBag.Finalizado = Convert.ToDouble((finalizado / aulaDAO.Listagem().Count) * 100);
-                ViewBag.Futura = (futura / aulaDAO.Listagem().Count) * 100;
+
+                if (ativo != 0)
+                {
+                    ViewBag.Ativo = Convert.ToInt16((ativo / aulaDAO.Listagem().Count) * 100);
+                }
+                else {
+                    ViewBag.Ativo = 0;
+                }
+                ViewBag.Finalizado = Convert.ToInt16((finalizado / aulaDAO.Listagem().Count) * 100);
+                ViewBag.Futura = Convert.ToInt16((futura / aulaDAO.Listagem().Count) * 100);
 
                 return View("Index");
             }
