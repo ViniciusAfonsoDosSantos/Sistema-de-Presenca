@@ -43,9 +43,6 @@ namespace TrabalhoInterdisciplinar.Controllers
                 ViewBag.Materia = materiadao.Listagem().Count;
                 ViewBag.Aula = auladao.Listagem().Count;
 
-
-
-
                 return View("Index");
             }
             catch (Exception erro)
