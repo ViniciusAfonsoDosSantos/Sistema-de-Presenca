@@ -59,22 +59,29 @@ namespace TrabalhoInterdisciplinar.DAO
             string conn = "mongodb://helix:H3l1xNG@191.233.28.24:27000/?authMechanism=SCRAM-SHA-1";
             var client = new MongoClient(conn);
             var db = client.GetDatabase("sth_helixiot");
-            var entity = db.GetCollection<ComandosModel>("sth_/_urn:ngsi-ld:aluno:043_Aluno");
-
-            //na entidade do aluno, pegar os documentos dos comandos de presença
-            //pegar as novas presencas do aluno, ordenar pelas mais recentes
-            PresencaDAO dao = new PresencaDAO();
-            List<string> listaDatasPresencas = dao.NovasPresencas(31);
-            var docs = entity.Find(x => x.attrName == "presenca").ToList();
-            docs.Reverse();
-            foreach (var doc in docs)
+            foreach (var aluno in new AlunoDAO().Listagem())
             {
-                if (listaDatasPresencas.Contains(doc.recvTime.ToString("dd/MM/yyyy HH:mm")))
+                if (aluno.IdBiometria != 0)
                 {
-                    return;
+                    var entity = db.GetCollection<ComandosModel>($"sth_/_urn:ngsi-ld:aluno:{aluno.IdBiometria.ToString("D3")}_Aluno");
+
+                    //na entidade do aluno, pegar os documentos dos comandos de presença
+                    //pegar as novas presencas do aluno, ordenar pelas mais recentes
+                    PresencaDAO dao = new PresencaDAO();
+                    List<string> listaDatasPresencas = dao.NovasPresencas(31);
+                    var docs = entity.Find(x => x.attrName == "presenca").ToList();
+                    docs.Reverse();
+                    foreach (var doc in docs)
+                    {
+                        if (listaDatasPresencas.Contains(doc.recvTime.ToString("dd/MM/yyyy HH:mm")))
+                        {
+                            return;
+                        }
+                        ColocarPresencaSQL(doc);
+                    }
                 }
-                ColocarPresencaSQL(doc);
             }
+            
         }
         private void ColocarPresencaSQL(ComandosModel doc)
         {
@@ -89,17 +96,9 @@ namespace TrabalhoInterdisciplinar.DAO
 
         private void AtribuiPresencaAluno(int idAluno, int codAula, string situacao, DateTime horarioPresenca)
         {
-            //verificar ultimas presencas desse aluno;
-            //try
-            //{
             PresencaDAO presenca = new PresencaDAO();
             presenca.Insert(new PresencaViewModel { CodAluno = idAluno, CodAula = codAula, Presente = situacao, DataHoraPresenca = horarioPresenca });
-            //}
-            //catch (Exception)
-            //{
-
-            //}
-            //exception aqui, preciso fazer todo o caminho dos métodos para retornar à página de erro
+            
         }
         private AulaViewModel ObterAulaDia(DateTime recvTime)
         {
@@ -193,6 +192,7 @@ namespace TrabalhoInterdisciplinar.DAO
                 return listaPresencas;
             }
         }
+
         public List<int> PegaQuantidadePresenteEQuantidadeDeMaterias(int idMateria)
         {
             SqlParameter[] pAula =
