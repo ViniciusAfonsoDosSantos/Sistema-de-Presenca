@@ -42,6 +42,7 @@
         </div>
     </div>
 </div>
+
 <div class="wrapper">
     <div class="container">
         <div class="chart-wrapper-presenca">
@@ -52,7 +53,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-
     const ctx = document.getElementById('myChart');
     let dataObjects = [];
     var array = @Html.Raw(Json.Serialize(@ViewBag.QntdDePresenca));

@@ -42,32 +42,36 @@ namespace TrabalhoInterdisciplinar.Controllers
                 double ativo = 0;
                 double finalizado = 0;
                 double futura = 0;
-
-                foreach (var item in aulaDAO.Listagem())
+                if(aulaDAO.Listagem().Count!= 0)
                 {
-                    if (DateTime.Now < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
+                    foreach (var item in aulaDAO.Listagem())
                     {
-                       ativo++;
+                        if (DateTime.Now < item.DataHoraAula.AddMinutes(15) && DateTime.Now > item.DataHoraAula.AddMinutes(-15))
+                        {
+                            ativo++;
+                        }
+                        else if (DateTime.Now > item.DataHoraAula.AddMinutes(15))
+                        {
+                            finalizado++;
+                        }
+                        else if (DateTime.Now < item.DataHoraAula.AddMinutes(-15))
+                        {
+                            futura++;
+                        }
                     }
-                    else if (DateTime.Now > item.DataHoraAula.AddMinutes(15))
-                    {
-                        finalizado++;
-                    }
-                    else if (DateTime.Now < item.DataHoraAula.AddMinutes(-15))
-                    {
-                        futura++;
-                    }
-                }
 
-                if (ativo != 0)
-                {
-                    ViewBag.Ativo = Convert.ToInt16((ativo / aulaDAO.Listagem().Count) * 100);
+                    if (ativo != 0)
+                    {
+                        ViewBag.Ativo = Convert.ToInt16((ativo / aulaDAO.Listagem().Count) * 100);
+                    }
+                    else
+                    {
+                        ViewBag.Ativo = 0;
+                    }
+                    ViewBag.Finalizado = Convert.ToInt16((finalizado / aulaDAO.Listagem().Count) * 100);
+                    ViewBag.Futura = Convert.ToInt16((futura / aulaDAO.Listagem().Count) * 100);
                 }
-                else {
-                    ViewBag.Ativo = 0;
-                }
-                ViewBag.Finalizado = Convert.ToInt16((finalizado / aulaDAO.Listagem().Count) * 100);
-                ViewBag.Futura = Convert.ToInt16((futura / aulaDAO.Listagem().Count) * 100);
+                
 
                 return View("Index");
             }

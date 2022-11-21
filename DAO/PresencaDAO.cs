@@ -33,6 +33,8 @@ namespace TrabalhoInterdisciplinar.DAO
             return lista;
         }
 
+        
+
         protected override PresencaViewModel MontaModel(DataRow registro, bool comJoin = false)
         {
             PresencaViewModel p = new PresencaViewModel()
@@ -68,37 +70,62 @@ namespace TrabalhoInterdisciplinar.DAO
                     //na entidade do aluno, pegar os documentos dos comandos de presença
                     //pegar as novas presencas do aluno, ordenar pelas mais recentes
                     PresencaDAO dao = new PresencaDAO();
-                    List<string> listaDatasPresencas = dao.NovasPresencas(31);
+                    List<string> listaDatasPresencas = dao.NovasPresencas(aluno.ID);
                     var docs = entity.Find(x => x.attrName == "presenca").ToList();
                     docs.Reverse();
                     foreach (var doc in docs)
                     {
                         if (listaDatasPresencas.Contains(doc.recvTime.ToString("dd/MM/yyyy HH:mm")))
                         {
-                            return;
+                            break;
                         }
-                        ColocarPresencaSQL(doc);
+                        ColocarPresencaSQL(doc, aluno.ID);
                     }
                 }
             }
             
         }
-        private void ColocarPresencaSQL(ComandosModel doc)
+        private void ColocarPresencaSQL(ComandosModel doc, int idAluno)
         {
             AulaViewModel aula = ObterAulaDia(doc.recvTime);
             if (aula != null)
             {
-                //Achar aluno pelo IdBiometria
-                int idAluno = 31;
                 AtribuiPresencaAluno(idAluno, aula.ID, doc.attrValue, doc.recvTime);
             }
         }
 
+        private bool verificaPresencaAluno(int codAluno, int codAula)
+        {
+            SqlParameter[] p = new SqlParameter[]
+            {
+                new SqlParameter("tabela", "presenca"),
+                new SqlParameter("ordem" , 1)
+            };
+
+            var tabela = HelperDAO.ExecutaProcSelect("spListagem", p);
+            var presencasAluno = new List<int>();
+            foreach (DataRow item in tabela.Rows)
+            {
+                if (Convert.ToInt32(item["CodAluno"]) == codAluno)
+                {
+                    int idAula = Convert.ToInt32(item["CodAula"]);
+
+                    presencasAluno.Add(idAula);
+                }
+            }
+
+            if (presencasAluno.Find(p => p == codAula) >= 1)
+            {
+                return false;
+            }
+            else
+                return true;
+        }
+
         private void AtribuiPresencaAluno(int idAluno, int codAula, string situacao, DateTime horarioPresenca)
         {
-            PresencaDAO presenca = new PresencaDAO();
-            presenca.Insert(new PresencaViewModel { CodAluno = idAluno, CodAula = codAula, Presente = situacao, DataHoraPresenca = horarioPresenca });
-            
+            if(verificaPresencaAluno(idAluno, codAula))
+                Insert(new PresencaViewModel { CodAluno = idAluno, CodAula = codAula, Presente = situacao, DataHoraPresenca = horarioPresenca });   
         }
         private AulaViewModel ObterAulaDia(DateTime recvTime)
         {

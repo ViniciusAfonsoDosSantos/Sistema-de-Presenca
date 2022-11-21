@@ -54,16 +54,21 @@ namespace TrabalhoInterdisciplinar.Controllers
                 AlunoDAO alunodao = new AlunoDAO();
                 MateriaDAO materiadao = new MateriaDAO();
                 PresencaDAO presencadao = new PresencaDAO();
+                presencadao.PegaDadosMongoDB();
                 int qntdAlunos = alunodao.Listagem().Count;
                 ViewBag.QntdDePresenca = new List<object>();
-
                 foreach (var item in materiadao.Listagem())
                 {
                     List<int> quantidadespresenca = presencadao.PegaQuantidadePresenteEQuantidadeDeMaterias(item.ID);
-                    int valor = Convert.ToInt32((qntdAlunos * quantidadespresenca[1]) / quantidadespresenca[0]);
-                    ViewBag.QntdDePresenca.Add(new { valor, item.Descricao });
+                    if (quantidadespresenca[0] != 0 && quantidadespresenca[1] != 0)
+                    {
+                        double presentesRegistrados = Convert.ToDouble(quantidadespresenca[0]);
+                        double presentesTotais = Convert.ToDouble(quantidadespresenca[1]);
+                        int valor = Convert.ToInt32((presentesRegistrados / (qntdAlunos * presentesTotais))*100);
+                        ViewBag.QntdDePresenca.Add(new { valor, item.Descricao });
+                    }   
                 }
-                presencadao.PegaDadosMongoDB();
+                
                 PreparaDadosParaFiltros();
                 return View("Index");
             }
@@ -89,11 +94,11 @@ namespace TrabalhoInterdisciplinar.Controllers
                 foreach (var aula in aulas)
                 {
                     MateriaDAO materiaDAO = new MateriaDAO();
-                    if (aula.DataHoraAula < DateTime.Now)
-                    {
+                    //if (aula.DataHoraAula < DateTime.Now)
+                    //{
                         SelectListItem item = new SelectListItem($"{aula.Conteudo} - {materiaDAO.Consulta(aula.CodMateria).Descricao}", aula.ID.ToString());
                         listaAulas.Add(item);
-                    }
+                    //}
                 }
 
                 List<SelectListItem> listaAlunos = new List<SelectListItem>();

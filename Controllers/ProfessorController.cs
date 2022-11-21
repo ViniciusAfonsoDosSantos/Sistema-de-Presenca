@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Text.RegularExpressions;
 using TrabalhoInterdisciplinar.DAO;
+using TrabalhoInterdisciplinar.Helpers;
 using TrabalhoInterdisciplinar.Models;
 
 namespace TrabalhoInterdisciplinar.Controllers
@@ -35,7 +36,7 @@ namespace TrabalhoInterdisciplinar.Controllers
                         LoginViewModel modelLogin = new LoginViewModel()
                         {
                             ID = model.ID,
-                            SenhaHash = "0001"
+                            SenhaHash = PasswordHasher.Encrypt("0001")
                         };
                         LoginDAO login = new LoginDAO();
                         login.Insert(modelLogin);

@@ -49,12 +49,17 @@ namespace TrabalhoInterdisciplinar.DAO
         public AulaViewModel ConsultaPorData(DateTime horarioPresenca)
         {
             DateTime horarioParam;
-            if ((horarioPresenca.Hour == 19 && horarioPresenca.Minute < 30) || (horarioPresenca.Hour == 18 && horarioPresenca.Minute >= 15))
+            //if ((horarioPresenca.Hour == 17 && horarioPresenca.Minute < 30) || (horarioPresenca.Hour == 20 && horarioPresenca.Minute >= 15))
+            //    horarioParam = new DateTime(horarioPresenca.Year, horarioPresenca.Month, horarioPresenca.Day, 19, 15, 00, 00);
+            //if ((horarioPresenca.Hour == 21 && horarioPresenca.Minute < 30) || (horarioPresenca.Hour == 20 && horarioPresenca.Minute >= 55))
+            //    horarioParam = new DateTime(horarioPresenca.Year, horarioPresenca.Month, horarioPresenca.Day, 21, 5, 00, 00);
+            //else
+            //    throw new Exception("Aula com horário não condizente ao período noturno");
+
+            if (horarioPresenca.Hour < 22)
                 horarioParam = new DateTime(horarioPresenca.Year, horarioPresenca.Month, horarioPresenca.Day, 19, 15, 00, 00);
-            if ((horarioPresenca.Hour == 21 && horarioPresenca.Minute <30) || (horarioPresenca.Hour == 20 && horarioPresenca.Minute >= 55))
-                horarioParam = new DateTime(horarioPresenca.Year, horarioPresenca.Month, horarioPresenca.Day, 21, 5, 00, 00);
             else
-                horarioParam = new DateTime(horarioPresenca.Year, horarioPresenca.Month, horarioPresenca.Day, 16, 00, 00, 00);
+                throw new Exception("Aula com horário não condizente ao período noturno");
 
             SqlParameter[] p =
             {

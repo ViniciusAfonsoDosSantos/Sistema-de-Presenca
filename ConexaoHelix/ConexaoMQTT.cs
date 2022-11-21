@@ -88,7 +88,7 @@ namespace TrabalhoInterdisciplinar.ConexãoHelix
 
         public void PublishReadMQTT()
         {
-            var client = new RestClient("http://191.233.28.24:1026/v2/entities/urn:ngsi-ld:aluno:004/attrs");
+            var client = new RestClient("http://191.233.28.24:1026/v2/entities/urn:ngsi-ld:aluno:008/attrs");
             var request = new RestRequest();
             request.Method = Method.Patch;
             request.Timeout = 10000;
