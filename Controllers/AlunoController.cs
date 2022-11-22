@@ -137,7 +137,7 @@ namespace TrabalhoInterdisciplinar.Controllers
             else
             {
                 Regex validaNumeroTelefoneRegex = new Regex("^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$");
-                if (!validaNumeroTelefoneRegex.IsMatch(aluno.Telefone) || !Auxiliares.VerificaTelefone(aluno.Telefone))
+                if (!validaNumeroTelefoneRegex.IsMatch(aluno.Telefone))
                     ModelState.AddModelError("Telefone", "Telefone Inválido.");
             }
             if (string.IsNullOrEmpty(aluno.Cpf))
@@ -145,8 +145,12 @@ namespace TrabalhoInterdisciplinar.Controllers
             else
             {
                 Regex validaNumeroCPFRegex = new Regex("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$");
-                if (!validaNumeroCPFRegex.IsMatch(aluno.Cpf) || !Auxiliares.ValidaCPF(aluno.Cpf) || !Auxiliares.VerificaCPFExistente(aluno.Cpf))
+                if (!validaNumeroCPFRegex.IsMatch(aluno.Cpf) || !Auxiliares.ValidaCPF(aluno.Cpf))
                     ModelState.AddModelError("Cpf", "CPF Inválido.");
+                if(operacao == "I" && !Auxiliares.VerificaCPFExistente(aluno.Cpf))
+                {
+                    ModelState.AddModelError("Cpf", "CPF já cadastrado.");
+                }
             }
         }
 

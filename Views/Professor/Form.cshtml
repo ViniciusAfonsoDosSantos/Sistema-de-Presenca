@@ -35,11 +35,21 @@
         <input asp-for="Telefone" class="form-control campo-personalizado"/>
         <span asp-validation-for="Telefone" class="text-danger"></span>
         <br />
-        <label for="CPF" class="mt-1">CPF</label>
-        <input asp-for="CPF" class="form-control campo-personalizado" />
-        <span asp-validation-for="CPF" class="text-danger"></span>
+        @if(ViewBag.Operacao == "A")
+        {
+            <label for="CPF" class="mt-1">CPF</label>
+            <input asp-for="CPF" class="form-control campo-personalizado" readonly/>
+            <span asp-validation-for="CPF" class="text-danger"></span>
+        }
+        else
+        {
+            <label for="CPF" class="mt-1">CPF</label>
+            <input asp-for="CPF" class="form-control campo-personalizado" />
+            <span asp-validation-for="CPF" class="text-danger"></span>   
+        }
         <br />
-
+        
+        
         <!--Toast : Para notificar sucesso-->
         <input type="submit" value="Cadastrar" class="btn btn-success botao-personalizado mt-1" />
 

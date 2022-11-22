@@ -20,7 +20,7 @@ namespace TrabalhoInterdisciplinar.Controllers
         public override IActionResult Save(ProfessorViewModel model, string Operacao)
         {
             try
-            {
+            {   
                 ValidaDados(model, Operacao);
                 if (ModelState.IsValid == false)
                 {
@@ -76,7 +76,7 @@ namespace TrabalhoInterdisciplinar.Controllers
             else
             {
                 Regex validaNumeroTelefoneRegex = new Regex("^\\([1-9]{2}\\) (?:[2-8]|9[1-9])[0-9]{3}\\-[0-9]{4}$");
-                if (!validaNumeroTelefoneRegex.IsMatch(professor.Telefone) || !Auxiliares.VerificaTelefone(professor.Telefone))
+                if (!validaNumeroTelefoneRegex.IsMatch(professor.Telefone))
                     ModelState.AddModelError("Telefone", "Telefone Inválido.");
             }
             if (string.IsNullOrEmpty(professor.CPF))
@@ -84,8 +84,13 @@ namespace TrabalhoInterdisciplinar.Controllers
             else
             {
                 Regex validaNumeroCPFRegex = new Regex("^\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2}$");
-                if (!validaNumeroCPFRegex.IsMatch(professor.CPF) || !Auxiliares.ValidaCPF(professor.CPF) || !Auxiliares.VerificaCPFExistente(professor.CPF))
+                if (!validaNumeroCPFRegex.IsMatch(professor.CPF) || !Auxiliares.ValidaCPF(professor.CPF))
                     ModelState.AddModelError("CPF", "CPF Inválido.");
+
+                if(operacao == "I" && !Auxiliares.VerificaCPFExistente(professor.CPF))
+                {
+                    ModelState.AddModelError("CPF", "CPF já cadastrado.");
+                }
             }
             
         }
