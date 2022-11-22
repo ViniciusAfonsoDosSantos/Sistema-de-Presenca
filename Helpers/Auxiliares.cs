@@ -4,11 +4,12 @@ namespace TrabalhoInterdisciplinar.Helpers
 {
     public class Auxiliares
     {
-        public static bool VerificaCPFExistente(string cpf)
+        public static bool VerificaCPFExistente(string cpf, string operacao="I")
         {
             AlunoDAO alunoDAO = new AlunoDAO();
             ProfessorDAO profDAO = new ProfessorDAO();
-            var cpfAluno = alunoDAO.Listagem().Find(a => a.Cpf == cpf);
+            var cpfAluno = alunoDAO.Listagem().Find(a => a.Cpf == cpf); ;
+           
             if(cpfAluno == null)
             {
                 var cpfProfessor = profDAO.Listagem().Find(p => p.CPF == cpf);

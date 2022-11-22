@@ -35,10 +35,18 @@
         <input asp-for="Telefone" class="form-control campo-personalizado" />
         <span asp-validation-for="Telefone" class="text-danger"></span>
         <br />
-        <label for="Cpf" class="mt-1">CPF</label>
-        <input asp-for="Cpf" class="form-control campo-personalizado" />
-        <span asp-validation-for="Cpf" class="text-danger"></span>
-        <br />
+        @if(ViewBag.Operacao == "A")
+        {
+            <label for="CPF" class="mt-1">CPF</label>
+            <input asp-for="Cpf" class="form-control campo-personalizado" readonly/>
+            <span asp-validation-for="Cpf" class="text-danger"></span>
+        }
+        else
+        {
+            <label for="CPF" class="mt-1">CPF</label>
+            <input asp-for="Cpf" class="form-control campo-personalizado" />
+            <span asp-validation-for="Cpf" class="text-danger"></span>   
+        }
 
         <br />
         <input type="file" name="Imagem" id="Imagem" onchange="exibirImagem()" class="btn btn-secondary botao-personalizado-imagem">
